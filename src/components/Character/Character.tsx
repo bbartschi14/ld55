@@ -116,7 +116,7 @@ const Character = () => {
           actions.deliverPackage();
         }
       }}
-      position={[30, 0, 0]}
+      position={[20, 0, 20]}
     >
       <group>
         <mesh position={[0, 1, 0]}>

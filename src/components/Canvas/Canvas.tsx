@@ -12,7 +12,7 @@ import House from "@/components/House/House";
 import { Physics } from "@react-three/rapier";
 import { Suspense } from "react";
 import { CONTROLS_MAP } from "@/constants/controls";
-import { useGameStore } from "@/store/gameStore";
+import { MAP_SIZE, useGameStore } from "@/store/gameStore";
 import Bat from "@/components/Bat/Bat";
 import Bounds from "@/components/Bounds/Bounds";
 
@@ -20,18 +20,11 @@ THREE.ColorManagement.enabled = true;
 
 const CAMERA_POLAR_ANGLE = degToRad(40);
 const CAMERA_AZIMUTH_ANGLE = degToRad(45);
-const CAMERA_DISTANCE = 30;
-
-const MAP_SIZE = [60, 60] as [number, number];
-
-const NUM_BATS = 30;
-const BAT_SPAWN_POINTS = Array.from({ length: NUM_BATS }, () => [
-  Math.random() * MAP_SIZE[0] - MAP_SIZE[0] / 2,
-  Math.random() * MAP_SIZE[1] - MAP_SIZE[1] / 2,
-]);
+const CAMERA_DISTANCE = 60;
 
 const Canvas = () => {
   const houses = useGameStore((state) => state.houses);
+  const bats = useGameStore((state) => state.bats);
 
   return (
     <div className={classes.root}>
@@ -57,8 +50,12 @@ const Canvas = () => {
               ))}
               <Bounds bounds={MAP_SIZE} />
 
-              {BAT_SPAWN_POINTS.map((position, index) => (
-                <Bat key={index} position={[position[0], 0, position[1]]} />
+              {bats.map((bat) => (
+                <Bat
+                  key={bat.id}
+                  position={[bat.spawnPoint[0], 0, bat.spawnPoint[1]]}
+                  id={bat.id}
+                />
               ))}
 
               <Character />

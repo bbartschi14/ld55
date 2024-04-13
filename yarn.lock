@@ -1468,6 +1468,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/uuid@npm:^9":
+  version: 9.0.8
+  resolution: "@types/uuid@npm:9.0.8"
+  checksum: 10c0/b411b93054cb1d4361919579ef3508a1f12bf15b5fdd97337d3d351bece6c921b52b6daeef89b62340fd73fd60da407878432a1af777f40648cbe53a01723489
+  languageName: node
+  linkType: hard
+
 "@types/webxr@npm:*, @types/webxr@npm:^0.5.2":
   version: 0.5.15
   resolution: "@types/webxr@npm:0.5.15"
@@ -4735,6 +4742,7 @@ __metadata:
     "@types/react": "npm:^18.2.65"
     "@types/react-dom": "npm:^18.2.21"
     "@types/three": "npm:^0.163.0"
+    "@types/uuid": "npm:^9"
     "@typescript-eslint/eslint-plugin": "npm:^7.2.0"
     "@typescript-eslint/parser": "npm:^7.2.0"
     "@vanilla-extract/css": "npm:^1.14.1"
@@ -4752,6 +4760,7 @@ __metadata:
     react-dom: "npm:^18.2.0"
     three: "npm:^0.163.0"
     typescript: "npm:^5.4.2"
+    uuid: "npm:^9.0.1"
     vite: "npm:^5.2.8"
     zustand: "npm:^4.5.2"
   languageName: unknown
