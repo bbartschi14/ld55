@@ -3,7 +3,7 @@ import { CameraControls } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import { Vector3 } from "three";
-import { degToRad, lerp } from "three/src/math/MathUtils.js";
+import { degToRad } from "three/src/math/MathUtils.js";
 
 const CAMERA_POLAR_ANGLE = degToRad(40);
 const CAMERA_AZIMUTH_ANGLE = degToRad(0);
@@ -13,10 +13,8 @@ const _target = new Vector3();
 const _forward = new Vector3();
 
 const GameCameraControls = () => {
-  const polarTarget = useRef(CAMERA_POLAR_ANGLE);
-
   const ref = useRef<CameraControls>(null!);
-  useFrame((state, delta) => {
+  useFrame(() => {
     const character = gameStore.getState().character;
 
     if (character) {
@@ -24,10 +22,6 @@ const GameCameraControls = () => {
       ref.current.moveTo(_target.x, _target.y, _target.z, true);
 
       character.getWorldDirection(_forward);
-      // const radians = Math.atan2(_forward.x, _forward.z);
-
-      // polarTarget.current = lerp(polarTarget.current, radians, 1 * delta);
-      // ref.current.rotateAzimuthTo(polarTarget.current);
     }
   });
 
