@@ -7,22 +7,29 @@ import {
 import { useRef } from "react";
 import { Vector3 } from "three";
 
-const randomVectorOnUnitCircle = () => {
-  const angle = Math.random() * Math.PI * 2;
-  return [Math.cos(angle), Math.sin(angle)];
-};
+// const randomVectorOnUnitCircle = () => {
+//   const angle = Math.random() * Math.PI * 2;
+//   return [Math.cos(angle), Math.sin(angle)];
+// };
+
+const DIRECTIONS = [
+  new Vector3(1, 0, 0),
+  new Vector3(-1, 0, 0),
+  new Vector3(0, 0, 1),
+  new Vector3(0, 0, -1),
+  new Vector3(1, 0, 1),
+  new Vector3(-1, 0, -1),
+];
 
 const createRandomVector3 = () => {
-  const [x, z] = randomVectorOnUnitCircle();
-  return new Vector3(x, 0, z);
+  return new Vector3().copy(
+    DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)]
+  );
 };
-
-const _up = new Vector3(0, 1, 0);
 
 const Bat = (props: { position: [number, number, number] }) => {
   const rigidBody = useRef<RapierRigidBody>(null);
   const wanderDirection = useRef(createRandomVector3());
-  // const wanderDirection = useRef(new Vector3(1, 0, 0));
   const speed = useRef(5);
 
   return (
@@ -33,17 +40,19 @@ const Bat = (props: { position: [number, number, number] }) => {
         wanderDirection.current.y * speed.current,
         wanderDirection.current.z * speed.current,
       ]}
-      onCollisionEnter={({ manifold, rigidBodyObject }) => {
+      onCollisionEnter={({ rigidBodyObject }) => {
         const name = rigidBodyObject?.name ?? "";
         if (["house", "bounds"].includes(name) && rigidBody.current) {
-          wanderDirection.current.copy(manifold.normal());
-
-          // Random angle from -π/4 to π/4
-          const randomAngle = ((Math.random() - 0.5) * Math.PI) / 2;
-          wanderDirection.current.applyAxisAngle(_up, randomAngle);
-
-          wanderDirection.current.multiplyScalar(speed.current);
-          rigidBody.current.setLinvel(wanderDirection.current, true);
+          // Flip direction
+          wanderDirection.current = wanderDirection.current.negate();
+          rigidBody.current.setLinvel(
+            {
+              x: wanderDirection.current.x * speed.current,
+              y: wanderDirection.current.y * speed.current,
+              z: wanderDirection.current.z * speed.current,
+            },
+            true
+          );
         }
       }}
       collisionGroups={interactionGroups(CollisionGroup.Bat, [

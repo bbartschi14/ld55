@@ -22,6 +22,7 @@ export const gameStore = createStore<GameState & { actions: GameActions }>()(
       { position: [15, 0, 0] },
       { position: [0, 0, 15] },
       { position: [-15, 0, 0] },
+      { position: [0, 0, -15] },
     ],
 
     actions: {
