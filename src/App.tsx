@@ -1,8 +1,8 @@
 import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
-import { theme } from "./theme";
-import { Welcome } from "./Welcome/Welcome";
-import { ColorSchemeToggle } from "./ColorSchemeToggle/ColorSchemeToggle";
+import { theme } from "./styles/theme";
+import { Welcome } from "@/components/Welcome/Welcome";
+import { ColorSchemeToggle } from "@/components/ColorSchemeToggle/ColorSchemeToggle";
 
 export default function App() {
   return (
