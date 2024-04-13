@@ -4,8 +4,7 @@ import { Canvas as R3FCanvas } from "@react-three/fiber";
 import * as classes from "./Canvas.css";
 import { Perf } from "r3f-perf";
 import * as THREE from "three";
-import { CameraControls, KeyboardControls } from "@react-three/drei";
-import { degToRad } from "three/src/math/MathUtils.js";
+import { KeyboardControls } from "@react-three/drei";
 import Ground from "@/components/Ground/Ground";
 import Character from "@/components/Character/Character";
 import House from "@/components/House/House";
@@ -15,12 +14,9 @@ import { CONTROLS_MAP } from "@/constants/controls";
 import { MAP_SIZE, useGameStore } from "@/store/gameStore";
 import Bat from "@/components/Bat/Bat";
 import Bounds from "@/components/Bounds/Bounds";
+import GameCameraControls from "@/components/GameCameraControls/GameCameraControls";
 
 THREE.ColorManagement.enabled = true;
-
-const CAMERA_POLAR_ANGLE = degToRad(40);
-const CAMERA_AZIMUTH_ANGLE = degToRad(45);
-const CAMERA_DISTANCE = 60;
 
 const Canvas = () => {
   const houses = useGameStore((state) => state.houses);
@@ -35,14 +31,9 @@ const Canvas = () => {
         <Perf />
 
         <Suspense>
-          <Physics debug gravity={[0, 0, 0]}>
+          <Physics debug={false} gravity={[0, 0, 0]}>
             <KeyboardControls map={CONTROLS_MAP}>
-              <CameraControls
-                polarAngle={CAMERA_POLAR_ANGLE}
-                distance={CAMERA_DISTANCE}
-                maxDistance={CAMERA_DISTANCE + 25}
-                azimuthAngle={CAMERA_AZIMUTH_ANGLE}
-              />
+              <GameCameraControls />
 
               <color attach="background" args={["#f8ebff"]} />
               {houses.map((house, index) => (

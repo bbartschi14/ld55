@@ -15,6 +15,7 @@ import { Group, Matrix4, Quaternion, Vector3 } from "three";
 import { clamp } from "three/src/math/MathUtils.js";
 
 const _position = new Vector3();
+const _targetPosition = new Vector3();
 const _direction = new Vector3();
 const _left = new Vector3();
 const _up = new Vector3(0, 1, 0);
@@ -26,14 +27,28 @@ const Character = () => {
   const tractorBeam = useRef<Group>(null!);
 
   const horizontalVelocity = useRef(0);
+  const forwardVelocity = useRef(0);
+
   const currentHouse = useGameStore((state) => state.currentHouse);
 
   const tractorBeamSpring = useSpring({
-    opacity: currentHouse === null ? 0 : 1,
+    opacity: currentHouse === null ? 0 : 0.5,
   });
 
+  const forwardPressed = useKeyboardControls(
+    (state) => state[CONTROLS.forward]
+  );
+  const backPressed = useKeyboardControls((state) => state[CONTROLS.back]);
   const leftPressed = useKeyboardControls((state) => state[CONTROLS.left]);
   const rightPressed = useKeyboardControls((state) => state[CONTROLS.right]);
+
+  const rotationSpring = useSpring({
+    rotation: [
+      forwardPressed ? -Math.PI / 8 : backPressed ? Math.PI / 8 : 0,
+      0,
+      leftPressed ? Math.PI / 4 : rightPressed ? -Math.PI / 4 : 0,
+    ],
+  });
 
   useBeforePhysicsStep(() => {
     if (rigidBody.current && currentHouse !== null) {
@@ -46,6 +61,11 @@ const Character = () => {
         gameStore.getState().houses[currentHouse].position;
       const position = rigidBody.current.translation();
       _position.set(position.x, position.y, position.z);
+      _targetPosition.set(
+        currentHousePosition[0],
+        currentHousePosition[1],
+        currentHousePosition[2]
+      );
       _direction
         .set(
           currentHousePosition[0] - position.x,
@@ -56,7 +76,28 @@ const Character = () => {
       _left.copy(_up).cross(_direction).normalize();
 
       // Set tractor beam force
-      rigidBody.current.addForce(_direction.multiplyScalar(300), true);
+      const maxForwardVelocity = 250;
+      const forwardAcceleration = 25;
+      const baseSpeed = 300;
+      if (forwardPressed) {
+        forwardVelocity.current += forwardAcceleration;
+      } else if (backPressed) {
+        forwardVelocity.current -= forwardAcceleration;
+      } else {
+        // Slow down
+        forwardVelocity.current *= 0.95;
+      }
+
+      forwardVelocity.current = clamp(
+        forwardVelocity.current,
+        -maxForwardVelocity,
+        maxForwardVelocity
+      );
+
+      rigidBody.current.addForce(
+        _direction.multiplyScalar(baseSpeed + forwardVelocity.current),
+        true
+      );
 
       // Calculate and apply horizontal movement
       const maxHorizontalVelocity = 500;
@@ -82,7 +123,7 @@ const Character = () => {
       );
 
       // Face towards the target
-      _rotation.lookAt(_position, _direction, _up);
+      _rotation.lookAt(_position, _targetPosition, _up);
       _rotationQuat.setFromRotationMatrix(_rotation);
       rigidBody.current.setRotation(_rotationQuat, true);
 
@@ -119,14 +160,22 @@ const Character = () => {
       position={[20, 0, 20]}
     >
       <group>
-        <mesh position={[0, 1, 0]}>
+        <group position={[0, 1, 0]}>
           <CuboidCollider
             args={[0.5, 0.5, 0.5]}
             collisionGroups={interactionGroups(CollisionGroup.Character)}
           />
-
-          <boxGeometry args={[1, 1, 1]} />
-          <meshStandardMaterial color="#c33ade" />
+          <animated.mesh
+            ref={(ref) => {
+              if (ref) gameStore.setState({ character: ref });
+            }}
+            rotation={
+              rotationSpring.rotation as unknown as [number, number, number]
+            }
+          >
+            <boxGeometry args={[1, 1, 1]} />
+            <meshStandardMaterial color="#c33ade" />
+          </animated.mesh>
           <group ref={tractorBeam}>
             <mesh position={[0, 0, -0.5]} rotation={[Math.PI / 2, 0, 0]}>
               <cylinderGeometry args={[0.1, 0.1, 1]} />
@@ -137,7 +186,7 @@ const Character = () => {
               />
             </mesh>
           </group>
-        </mesh>
+        </group>
       </group>
     </RigidBody>
   );

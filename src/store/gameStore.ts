@@ -1,6 +1,7 @@
 import { createStore, useStore } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { v4 as uuid } from "uuid";
+import { Object3D } from "three";
 export interface GameActions {
   deliverPackage: () => void;
   hitBat: (id: string) => void;
@@ -17,6 +18,7 @@ export interface GameState {
   houses: {
     position: [number, number, number];
   }[];
+  character: Object3D | null;
 }
 
 export const MAP_SIZE = [50, 50] as [number, number];
@@ -87,6 +89,7 @@ export const gameStore = createStore<GameState & { actions: GameActions }>()(
     })),
     currentHouse: 0,
     houses: initialHouses,
+    character: null,
     actions: {
       deliverPackage: () => {
         const houseDelivered = get().currentHouse;
