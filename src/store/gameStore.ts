@@ -2,6 +2,7 @@ import { createStore, useStore } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { v4 as uuid } from "uuid";
 import { Object3D } from "three";
+
 export interface GameActions {
   deliverPackage: () => void;
   hitBat: (id: string) => void;
@@ -21,72 +22,43 @@ export interface GameState {
   character: Object3D | null;
 }
 
-export const MAP_SIZE = [50, 50] as [number, number];
-
-const NUM_BATS = 40;
-const BAT_PADDING = 3;
-
-const getPointInBounds = () => {
-  const width = MAP_SIZE[0] - BAT_PADDING;
-  const height = MAP_SIZE[1] - BAT_PADDING;
-  return [
-    Math.random() * width - width / 2,
-    Math.random() * height - height / 2,
-  ] as [number, number];
-};
-
-const pointHouseIntersection = (
-  point: [number, number],
-  house: [number, number]
-) => {
-  const distance = Math.sqrt(
-    Math.pow(point[0] - house[0], 2) + Math.pow(point[1] - house[1], 2)
-  );
-
-  return distance < 1;
-};
-
-const generateBatSpawnPoints = (
-  houses: {
-    position: [number, number, number];
-  }[]
-) => {
-  const points = [];
-  for (let i = 0; i < NUM_BATS; i++) {
-    let tries = 0;
-    let point = getPointInBounds();
-    while (
-      houses.some((house) =>
-        pointHouseIntersection(point, [house.position[0], house.position[2]])
-      ) &&
-      tries < 5
-    ) {
-      point = getPointInBounds();
-      tries++;
-    }
-    points.push(point);
-  }
-  return points;
-};
-
 const initialHouses: {
   position: [number, number, number];
 }[] = [
-  { position: [0, 0, 0] },
   { position: [15, 0, 0] },
-  { position: [0, 0, 15] },
-  { position: [-15, 0, 0] },
-  { position: [0, 0, -15] },
+  { position: [45, 0, -5] },
+  { position: [80, 0, 5] },
+  { position: [105, 0, 0] },
+  { position: [140, 0, -5] },
+  { position: [165, 0, 0] },
+  { position: [190, 0, 5] },
 ];
+
+const generateBats = (
+  minX: number,
+  maxX: number,
+  minZ: number,
+  maxZ: number,
+  batCount: number
+) => {
+  const bats = [];
+  for (let i = 0; i < batCount; i++) {
+    bats.push({
+      id: uuid(),
+      spawnPoint: [
+        Math.random() * (maxX - minX) + minX,
+        Math.random() * (maxZ - minZ) + minZ,
+      ] as [number, number],
+    });
+  }
+  return bats;
+};
 
 export const gameStore = createStore<GameState & { actions: GameActions }>()(
   immer((set, get) => ({
     score: 0,
     hitCount: 0,
-    bats: generateBatSpawnPoints(initialHouses).map((p) => ({
-      id: uuid(),
-      spawnPoint: p,
-    })),
+    bats: generateBats(-5, 190, -10, 10, 100),
     currentHouse: 0,
     houses: initialHouses,
     character: null,
@@ -102,7 +74,7 @@ export const gameStore = createStore<GameState & { actions: GameActions }>()(
         setTimeout(() => {
           const nextHouse = (houseDelivered + 1) % get().houses.length;
           set({ currentHouse: nextHouse });
-        }, 1000);
+        }, 0);
       },
       hitBat: (id: string) => {
         set({ hitCount: get().hitCount + 1 });

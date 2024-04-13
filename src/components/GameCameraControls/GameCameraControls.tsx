@@ -30,7 +30,7 @@ const GameCameraControls = () => {
       ref={ref}
       polarAngle={CAMERA_POLAR_ANGLE}
       distance={CAMERA_DISTANCE}
-      maxDistance={CAMERA_DISTANCE + 25}
+      // maxDistance={CAMERA_DISTANCE + 25}
       azimuthAngle={CAMERA_AZIMUTH_ANGLE}
       smoothTime={1}
       polarRotateSpeed={0.1}

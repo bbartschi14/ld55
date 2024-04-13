@@ -5,13 +5,12 @@ import * as classes from "./Canvas.css";
 import { Perf } from "r3f-perf";
 import * as THREE from "three";
 import { KeyboardControls } from "@react-three/drei";
-import Ground from "@/components/Ground/Ground";
 import Character from "@/components/Character/Character";
 import House from "@/components/House/House";
 import { Physics } from "@react-three/rapier";
 import { Suspense } from "react";
 import { CONTROLS_MAP } from "@/constants/controls";
-import { MAP_SIZE, useGameStore } from "@/store/gameStore";
+import { useGameStore } from "@/store/gameStore";
 import Bat from "@/components/Bat/Bat";
 import Bounds from "@/components/Bounds/Bounds";
 import GameCameraControls from "@/components/GameCameraControls/GameCameraControls";
@@ -31,7 +30,7 @@ const Canvas = () => {
         <Perf />
 
         <Suspense>
-          <Physics debug={false} gravity={[0, 0, 0]}>
+          <Physics debug={true} gravity={[0, 0, 0]}>
             <KeyboardControls map={CONTROLS_MAP}>
               <GameCameraControls />
 
@@ -39,7 +38,7 @@ const Canvas = () => {
               {houses.map((house, index) => (
                 <House key={index} position={house.position} index={index} />
               ))}
-              <Bounds bounds={MAP_SIZE} />
+              <Bounds />
 
               {bats.map((bat) => (
                 <Bat
@@ -50,7 +49,7 @@ const Canvas = () => {
               ))}
 
               <Character />
-              <Ground />
+              {/* <Ground /> */}
               <ambientLight intensity={Math.PI / 3} />
               <directionalLight position={[0, 5, 5]} intensity={1} />
             </KeyboardControls>

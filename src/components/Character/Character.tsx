@@ -157,7 +157,7 @@ const Character = () => {
           actions.deliverPackage();
         }
       }}
-      position={[20, 0, 20]}
+      position={[0, 0, 0]}
     >
       <group>
         <group position={[0, 1, 0]}>

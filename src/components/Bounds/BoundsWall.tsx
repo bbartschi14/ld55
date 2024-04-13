@@ -12,15 +12,15 @@ type BoundsWallProps = {
 const BoundsWall = ({ x, z, width, height, depth }: BoundsWallProps) => {
   return (
     <RigidBody
-      position={[x + width / 2, height / 2, z + depth / 2]}
+      position={[x, 0, z]}
       collisionGroups={interactionGroups(CollisionGroup.Bounds)}
       name="bounds"
       type="fixed"
     >
-      <group scale={[width, height, depth]} position={[0, 0, 0]}>
+      <group scale={[width, height * 2, depth]} position={[0, 0, 0]}>
         <mesh>
           <boxGeometry args={[1, 1, 1]} />
-          <meshStandardMaterial color="#696969" />
+          <meshStandardMaterial visible={false} color="#696969" />
         </mesh>
       </group>
     </RigidBody>

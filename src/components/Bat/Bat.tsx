@@ -15,8 +15,8 @@ import { Vector3 } from "three";
 // };
 
 const DIRECTIONS = [
-  new Vector3(1, 0, 0),
-  new Vector3(-1, 0, 0),
+  // new Vector3(1, 0, 0),
+  // new Vector3(-1, 0, 0),
   new Vector3(0, 0, 1),
   new Vector3(0, 0, -1),
   // new Vector3(1, 0, 1),
@@ -58,7 +58,7 @@ const Bat = (props: { position: [number, number, number]; id: string }) => {
       ]}
       onCollisionEnter={({ manifold, rigidBodyObject }) => {
         const name = rigidBodyObject?.name ?? "";
-        if (["house", "bounds"].includes(name) && rigidBody.current) {
+        if (["bounds"].includes(name) && rigidBody.current) {
           // Flip direction
           wanderDirection.current.copy(manifold.normal());
         } else if (name === "character") {
@@ -66,7 +66,6 @@ const Bat = (props: { position: [number, number, number]; id: string }) => {
         }
       }}
       collisionGroups={interactionGroups(CollisionGroup.Bat, [
-        CollisionGroup.House,
         CollisionGroup.Bounds,
         CollisionGroup.Character,
       ])}

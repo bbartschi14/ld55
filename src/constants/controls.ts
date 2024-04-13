@@ -6,8 +6,8 @@ export const CONTROLS = {
 };
 
 export const CONTROLS_MAP = [
-  { name: CONTROLS.forward, keys: ["KeyW", "ArrowUp"] },
-  { name: CONTROLS.back, keys: ["KeyS", "ArrowDown"] },
-  { name: CONTROLS.left, keys: ["KeyA", "ArrowLeft"] },
-  { name: CONTROLS.right, keys: ["KeyD", "ArrowRight"] },
+  { name: CONTROLS.forward, keys: ["KeyD", "ArrowRight"] },
+  { name: CONTROLS.back, keys: ["KeyA", "ArrowLeft"] },
+  { name: CONTROLS.left, keys: ["KeyW", "ArrowUp"] },
+  { name: CONTROLS.right, keys: ["KeyS", "ArrowDown"] },
 ];

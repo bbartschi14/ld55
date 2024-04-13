@@ -1,34 +1,34 @@
 import BoundsWall from "@/components/Bounds/BoundsWall";
 
 const thickness = 2;
-const Bounds = (props: { bounds: [number, number] }) => {
+const Bounds = () => {
   return (
     <>
       <BoundsWall
-        x={props.bounds[0] / 2}
-        z={-props.bounds[1] / 2}
+        x={-10}
+        z={0}
         width={thickness}
         height={thickness}
-        depth={props.bounds[0]}
+        depth={30}
       />
       <BoundsWall
-        x={-props.bounds[0] / 2}
-        z={-props.bounds[1] / 2}
+        x={200}
+        z={0}
         width={thickness}
         height={thickness}
-        depth={props.bounds[0]}
+        depth={30}
       />
       <BoundsWall
-        x={-props.bounds[0] / 2}
-        z={props.bounds[1] / 2}
-        width={props.bounds[1]}
+        x={95}
+        z={15}
+        width={210}
         height={thickness}
         depth={thickness}
       />
       <BoundsWall
-        x={-props.bounds[0] / 2}
-        z={-props.bounds[1] / 2}
-        width={props.bounds[1]}
+        x={95}
+        z={-15}
+        width={210}
         height={thickness}
         depth={thickness}
       />

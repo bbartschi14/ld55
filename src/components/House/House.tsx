@@ -1,7 +1,6 @@
 import { CollisionGroup } from "@/constants/collisions";
 import { GroupProps } from "@react-three/fiber";
 import {
-  BallCollider,
   CuboidCollider,
   RigidBody,
   interactionGroups,
@@ -15,11 +14,13 @@ const House = (props: HouseProps) => {
       <RigidBody
         type="fixed"
         name="house"
+        colliders={false}
         collisionGroups={interactionGroups(CollisionGroup.House)}
       >
-        <mesh position={[0, 0.5, 0]}>
-          <CuboidCollider args={[0.5, 0.5, 0.5]} />
-          <boxGeometry args={[1, 1, 1]} />
+        <CuboidCollider args={[0.1, 1, 0.1]} position={[0, 0.5, 1]} />
+        <CuboidCollider args={[0.1, 1, 0.1]} position={[0, 0.5, -1]} />
+        <mesh position={[0, 0.5, 0]} rotation={[0, Math.PI / 2, 0]}>
+          <torusGeometry args={[1, 0.1, 16, 100]} />
           <meshStandardMaterial color="#696969" />
         </mesh>
       </RigidBody>
@@ -30,7 +31,7 @@ const House = (props: HouseProps) => {
         name={`house-${props.index}`}
         collisionGroups={interactionGroups(CollisionGroup.House)}
       >
-        <BallCollider args={[1.25]} />
+        <CuboidCollider args={[0.05, 0.8, 0.8]} position={[0, 0.5, 0]} />
       </RigidBody>
     </group>
   );
