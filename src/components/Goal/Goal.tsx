@@ -6,16 +6,16 @@ import {
   interactionGroups,
 } from "@react-three/rapier";
 
-type HouseProps = GroupProps & { index: number };
+type GoalProps = GroupProps & { index: number };
 
-const House = (props: HouseProps) => {
+const Goal = (props: GoalProps) => {
   return (
     <group scale={[2, 2, 2]} {...props}>
       <RigidBody
         type="fixed"
-        name="house"
+        name="goal"
         colliders={false}
-        collisionGroups={interactionGroups(CollisionGroup.House)}
+        collisionGroups={interactionGroups(CollisionGroup.Goal)}
       >
         <CuboidCollider args={[0.1, 1, 0.1]} position={[0, 0.5, 1]} />
         <CuboidCollider args={[0.1, 1, 0.1]} position={[0, 0.5, -1]} />
@@ -28,8 +28,8 @@ const House = (props: HouseProps) => {
         colliders={false}
         type="fixed"
         sensor
-        name={`house-${props.index}`}
-        collisionGroups={interactionGroups(CollisionGroup.House)}
+        name={`goal-${props.index}`}
+        collisionGroups={interactionGroups(CollisionGroup.Goal)}
       >
         <CuboidCollider args={[0.05, 0.8, 0.8]} position={[0, 0.5, 0]} />
       </RigidBody>
@@ -37,4 +37,4 @@ const House = (props: HouseProps) => {
   );
 };
 
-export default House;
+export default Goal;

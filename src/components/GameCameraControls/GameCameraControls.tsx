@@ -15,7 +15,7 @@ const _forward = new Vector3();
 const GameCameraControls = () => {
   const ref = useRef<CameraControls>(null!);
   useFrame(() => {
-    const character = gameStore.getState().character;
+    const character = gameStore.getState().references.character;
 
     if (character) {
       character.getWorldPosition(_target);

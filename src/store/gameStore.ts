@@ -4,25 +4,32 @@ import { v4 as uuid } from "uuid";
 import { Object3D } from "three";
 
 export interface GameActions {
-  deliverPackage: () => void;
+  reachGoal: () => void;
   hitBat: (id: string) => void;
+  addTime: (time: number) => void;
+  reset: () => void;
 }
 
 export interface GameState {
+  runId: string;
   score: number;
-  hitCount: number;
+  levelTime: number;
   bats: {
     id: string;
     spawnPoint: [number, number];
   }[];
-  currentHouse: number | null;
-  houses: {
+  currentGoal: number | null;
+  goals: {
     position: [number, number, number];
   }[];
+  characterState: "default" | "hit" | "finished";
+}
+
+export interface GameReferences {
   character: Object3D | null;
 }
 
-const initialHouses: {
+const initialGoals: {
   position: [number, number, number];
 }[] = [
   { position: [15, 0, 0] },
@@ -54,36 +61,57 @@ const generateBats = (
   return bats;
 };
 
-export const gameStore = createStore<GameState & { actions: GameActions }>()(
+const initialGameState: GameState = {
+  runId: uuid(),
+  score: 0,
+  levelTime: 0,
+  bats: generateBats(5, 190, -10, 10, 50),
+  currentGoal: 0,
+  goals: initialGoals,
+  characterState: "default",
+};
+
+export const gameStore = createStore<
+  GameState & { references: GameReferences } & { actions: GameActions }
+>()(
   immer((set, get) => ({
-    score: 0,
-    hitCount: 0,
-    bats: generateBats(-5, 190, -10, 10, 100),
-    currentHouse: 0,
-    houses: initialHouses,
-    character: null,
+    ...initialGameState,
+    references: { character: null },
     actions: {
-      deliverPackage: () => {
-        const houseDelivered = get().currentHouse;
-        if (houseDelivered === null) {
+      reachGoal: () => {
+        const goalReached = get().currentGoal;
+        if (goalReached === null) {
           return;
         }
-        set({ score: get().score + 1 });
-        set({ currentHouse: null });
 
-        setTimeout(() => {
-          const nextHouse = (houseDelivered + 1) % get().houses.length;
-          set({ currentHouse: nextHouse });
-        }, 0);
+        set({ score: get().score + 1 });
+        const nextGoal = goalReached + 1;
+
+        if (nextGoal >= get().goals.length) {
+          set({ characterState: "finished", currentGoal: null });
+          return;
+        } else {
+          set({ currentGoal: nextGoal });
+        }
       },
       hitBat: (id: string) => {
-        set({ hitCount: get().hitCount + 1 });
-
         // Remove bat
         set(({ bats }) => {
           const index = bats.findIndex((bat) => bat.id === id);
           bats.splice(index, 1);
         });
+
+        set({ characterState: "hit" });
+        setTimeout(() => {
+          set({ characterState: "default" });
+        }, 1000);
+      },
+      addTime: (time: number) => {
+        set({ levelTime: get().levelTime + time });
+      },
+      reset: () => {
+        const nextRunId = uuid();
+        set({ ...initialGameState, runId: nextRunId });
       },
     },
   }))

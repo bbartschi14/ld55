@@ -6,7 +6,7 @@ import { Perf } from "r3f-perf";
 import * as THREE from "three";
 import { KeyboardControls } from "@react-three/drei";
 import Character from "@/components/Character/Character";
-import House from "@/components/House/House";
+import Goal from "@/components/Goal/Goal";
 import { Physics } from "@react-three/rapier";
 import { Suspense } from "react";
 import { CONTROLS_MAP } from "@/constants/controls";
@@ -14,29 +14,32 @@ import { useGameStore } from "@/store/gameStore";
 import Bat from "@/components/Bat/Bat";
 import Bounds from "@/components/Bounds/Bounds";
 import GameCameraControls from "@/components/GameCameraControls/GameCameraControls";
+import TimeManager from "@/components/TimeManager/TimeManager";
 
 THREE.ColorManagement.enabled = true;
 
 const Canvas = () => {
-  const houses = useGameStore((state) => state.houses);
+  const goals = useGameStore((state) => state.goals);
   const bats = useGameStore((state) => state.bats);
+  const runId = useGameStore((state) => state.runId);
 
   return (
     <div className={classes.root}>
       <R3FCanvas
         camera={{ fov: 30 }}
         gl={{ powerPreference: "high-performance", antialias: false }}
+        key={runId}
       >
         <Perf />
-
         <Suspense>
-          <Physics debug={true} gravity={[0, 0, 0]}>
+          <Physics debug={false} gravity={[0, 0, 0]}>
+            <TimeManager />
             <KeyboardControls map={CONTROLS_MAP}>
               <GameCameraControls />
 
               <color attach="background" args={["#f8ebff"]} />
-              {houses.map((house, index) => (
-                <House key={index} position={house.position} index={index} />
+              {goals.map((goal, index) => (
+                <Goal key={index} position={goal.position} index={index} />
               ))}
               <Bounds />
 

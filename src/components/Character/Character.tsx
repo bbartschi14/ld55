@@ -5,12 +5,13 @@ import { animated, useSpring } from "@react-spring/three";
 import { useKeyboardControls } from "@react-three/drei";
 import {
   CuboidCollider,
+  RapierCollider,
   RapierRigidBody,
   RigidBody,
   interactionGroups,
   useBeforePhysicsStep,
 } from "@react-three/rapier";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Group, Matrix4, Quaternion, Vector3 } from "three";
 import { clamp } from "three/src/math/MathUtils.js";
 
@@ -19,21 +20,31 @@ const _targetPosition = new Vector3();
 const _direction = new Vector3();
 const _left = new Vector3();
 const _up = new Vector3(0, 1, 0);
+const _prevQuat = new Quaternion();
 const _rotationQuat = new Quaternion();
 const _rotation = new Matrix4();
 
 const Character = () => {
   const rigidBody = useRef<RapierRigidBody>(null);
+  const characterCollider = useRef<RapierCollider>(null);
   const tractorBeam = useRef<Group>(null!);
 
+  const impulseVelocity = useRef(0);
   const horizontalVelocity = useRef(0);
   const forwardVelocity = useRef(0);
 
-  const currentHouse = useGameStore((state) => state.currentHouse);
+  const currentGoal = useGameStore((state) => state.currentGoal);
+  const characterState = useGameStore((state) => state.characterState);
 
-  const tractorBeamSpring = useSpring({
-    opacity: currentHouse === null ? 0 : 0.5,
-  });
+  const [tractorBeamSpring, tractorBeamSpringApi] = useSpring(() => ({
+    opacity: 0.5,
+  }));
+
+  const [opacitySpring, opacitySpringApi] = useSpring(() => ({
+    opacity: 1,
+    loop: { reverse: true },
+    immediate: false,
+  }));
 
   const forwardPressed = useKeyboardControls(
     (state) => state[CONTROLS.forward]
@@ -50,27 +61,62 @@ const Character = () => {
     ],
   });
 
+  useEffect(() => {
+    if (characterState === "hit") {
+      opacitySpringApi.start({
+        from: { opacity: 1 },
+        to: { opacity: 0.75 },
+        loop: { reverse: true },
+        config: { duration: 150 },
+      });
+    } else {
+      opacitySpringApi.stop();
+      opacitySpringApi.start({ opacity: 1 });
+    }
+
+    if (characterState === "finished") {
+      rigidBody.current?.setLinearDamping(1);
+      rigidBody.current?.applyImpulse(
+        {
+          x: 10,
+          y: 0,
+          z: 0,
+        },
+        true
+      );
+    }
+
+    characterCollider.current?.setEnabled(characterState === "default");
+  }, [characterState, characterCollider, opacitySpringApi]);
+
   useBeforePhysicsStep(() => {
-    if (rigidBody.current && currentHouse !== null) {
+    if (rigidBody.current && currentGoal !== null) {
       // Reset forces
       rigidBody.current.resetForces(true);
       rigidBody.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
 
+      if (characterState === "hit") {
+        forwardVelocity.current = 0;
+        horizontalVelocity.current = 0;
+        impulseVelocity.current = 0;
+        return;
+      }
+
       // Calculate vectors
-      const currentHousePosition =
-        gameStore.getState().houses[currentHouse].position;
+      const currentGoalPosition =
+        gameStore.getState().goals[currentGoal].position;
       const position = rigidBody.current.translation();
       _position.set(position.x, position.y, position.z);
       _targetPosition.set(
-        currentHousePosition[0],
-        currentHousePosition[1],
-        currentHousePosition[2]
+        currentGoalPosition[0],
+        currentGoalPosition[1],
+        currentGoalPosition[2]
       );
       _direction
         .set(
-          currentHousePosition[0] - position.x,
-          currentHousePosition[1] - position.y,
-          currentHousePosition[2] - position.z
+          currentGoalPosition[0] - position.x,
+          currentGoalPosition[1] - position.y,
+          currentGoalPosition[2] - position.z
         )
         .normalize();
       _left.copy(_up).cross(_direction).normalize();
@@ -78,7 +124,7 @@ const Character = () => {
       // Set tractor beam force
       const maxForwardVelocity = 250;
       const forwardAcceleration = 25;
-      const baseSpeed = 300;
+      const baseSpeed = 400;
       if (forwardPressed) {
         forwardVelocity.current += forwardAcceleration;
       } else if (backPressed) {
@@ -88,18 +134,15 @@ const Character = () => {
         forwardVelocity.current *= 0.95;
       }
 
+      impulseVelocity.current *= 0.95;
+
       forwardVelocity.current = clamp(
         forwardVelocity.current,
         -maxForwardVelocity,
         maxForwardVelocity
       );
 
-      rigidBody.current.addForce(
-        _direction.multiplyScalar(baseSpeed + forwardVelocity.current),
-        true
-      );
-
-      // Calculate and apply horizontal movement
+      // Calculate horizontal movement
       const maxHorizontalVelocity = 500;
       const horizontalAcceleration = 50;
       if (leftPressed) {
@@ -117,6 +160,13 @@ const Character = () => {
         maxHorizontalVelocity
       );
 
+      // Apply forces
+      rigidBody.current.addForce(
+        _direction.multiplyScalar(
+          baseSpeed + forwardVelocity.current + impulseVelocity.current
+        ),
+        true
+      );
       rigidBody.current.addForce(
         _left.multiplyScalar(horizontalVelocity.current),
         true
@@ -125,14 +175,16 @@ const Character = () => {
       // Face towards the target
       _rotation.lookAt(_position, _targetPosition, _up);
       _rotationQuat.setFromRotationMatrix(_rotation);
-      rigidBody.current.setRotation(_rotationQuat, true);
+
+      _prevQuat.copy(rigidBody.current.rotation());
+      rigidBody.current.setRotation(_prevQuat.slerp(_rotationQuat, 0.1), true);
 
       // Set tractor beam scale
       const distance = _position.distanceTo(
         new Vector3(
-          currentHousePosition[0],
-          currentHousePosition[1],
-          currentHousePosition[2]
+          currentGoalPosition[0],
+          currentGoalPosition[1],
+          currentGoalPosition[2]
         )
       );
 
@@ -149,32 +201,48 @@ const Character = () => {
       lockRotations
       name="character"
       onIntersectionEnter={(p) => {
-        if (p.rigidBodyObject?.name === `house-${currentHouse}`) {
+        if (p.rigidBodyObject?.name === `goal-${currentGoal}`) {
           rigidBody.current?.resetForces(true);
           rigidBody.current?.setLinvel({ x: 0, y: 0, z: 0 }, true);
           horizontalVelocity.current = 0;
 
-          actions.deliverPackage();
+          actions.reachGoal();
+
+          impulseVelocity.current = 700;
+          tractorBeamSpringApi.start({
+            from: { opacity: 0 },
+            to: [{ opacity: 0.5 }],
+            config: { duration: 500 },
+          });
         }
       }}
       position={[0, 0, 0]}
+      rotation={[0, -Math.PI / 2, 0]}
     >
       <group>
         <group position={[0, 1, 0]}>
           <CuboidCollider
+            ref={characterCollider}
             args={[0.5, 0.5, 0.5]}
             collisionGroups={interactionGroups(CollisionGroup.Character)}
           />
           <animated.mesh
             ref={(ref) => {
-              if (ref) gameStore.setState({ character: ref });
+              if (ref)
+                gameStore.setState(({ references }) => {
+                  references.character = ref;
+                });
             }}
             rotation={
               rotationSpring.rotation as unknown as [number, number, number]
             }
           >
             <boxGeometry args={[1, 1, 1]} />
-            <meshStandardMaterial color="#c33ade" />
+            <animated.meshStandardMaterial
+              color="#c33ade"
+              transparent
+              opacity={opacitySpring.opacity}
+            />
           </animated.mesh>
           <group ref={tractorBeam}>
             <mesh position={[0, 0, -0.5]} rotation={[Math.PI / 2, 0, 0]}>
