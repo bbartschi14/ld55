@@ -270,7 +270,6 @@ const Character = () => {
           <group ref={tractorBeam}>
             <mesh position={[0, 0, -0.5]} rotation={[Math.PI / 2, 0, 0]}>
               <cylinderGeometry args={[0.1, 0.1, 1]} />
-
               <primitive object={BeamMaterial} />
             </mesh>
           </group>

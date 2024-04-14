@@ -10,5 +10,5 @@ void main()
 
     float newOpacity = mod(currentLocation, 1.0);
 
-    csm_FragColor = vec4(1.0, 1.0, 1.0, newOpacity);
+    csm_FragColor = vec4(1.0, 1.0, 1.0, newOpacity * opacity);
 }
