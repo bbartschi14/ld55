@@ -2,9 +2,9 @@ import FloorMaterial from "@/materials/floorMaterial";
 import * as THREE from "three";
 
 const topLeft = new THREE.Color("#fae0fb");
-const topRight = new THREE.Color("#dabadc");
+const topRight = new THREE.Color("#f0d0f3");
 const bottomRight = new THREE.Color("#f5c5f7");
-const bottomLeft = new THREE.Color("#e8a1eb");
+const bottomLeft = new THREE.Color("#f4c2f6");
 
 const data = new Uint8Array([
   Math.round(bottomLeft.r * 255),

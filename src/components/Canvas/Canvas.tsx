@@ -55,7 +55,7 @@ const Canvas = () => {
               <Character />
               <Ground />
               <ambientLight intensity={Math.PI / 3} />
-              <directionalLight position={[0, 5, 5]} intensity={1} />
+              <directionalLight position={[0, 5, 5]} intensity={1.25} />
             </KeyboardControls>
           </Physics>
         </Suspense>

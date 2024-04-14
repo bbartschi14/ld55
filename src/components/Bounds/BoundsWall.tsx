@@ -15,16 +15,15 @@ type BoundsWallProps = {
   depth: number;
 };
 
-const fenceMaterial = new MeshStandardMaterial({ color: "#cb92f3" });
+const fenceMaterial = new MeshStandardMaterial({ color: "#b565cf" });
 
 // X value from -400 to 400 space by 5
 const fencePositions = Array.from({ length: 160 }, (_, i) => i * 15 - 400);
 
 const BoundsWall = ({ x, z, width, height, depth }: BoundsWallProps) => {
   const { nodes } = useGLTF("/fences.glb");
-  const texture = useTexture("/Shadow.png");
-
   const fence = nodes.Fence as unknown as { geometry: BufferGeometry };
+  const texture = useTexture("/Shadow.png");
 
   return (
     <RigidBody
@@ -54,7 +53,7 @@ const BoundsWall = ({ x, z, width, height, depth }: BoundsWallProps) => {
         <meshBasicMaterial
           color={"#000000"}
           transparent
-          opacity={0.125}
+          opacity={0.1}
           map={texture}
         />
         {fencePositions.map((position, i) => (

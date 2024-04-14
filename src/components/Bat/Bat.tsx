@@ -1,7 +1,7 @@
 import { CollisionGroup } from "@/constants/collisions";
 import { GROUND_LEVEL } from "@/constants/ground";
 import { actions } from "@/stores/gameStore";
-import { useTexture } from "@react-three/drei";
+import { useGLTF, useTexture } from "@react-three/drei";
 import {
   BallCollider,
   RapierRigidBody,
@@ -10,13 +10,15 @@ import {
   useBeforePhysicsStep,
 } from "@react-three/rapier";
 import { useRef } from "react";
-import { Vector3 } from "three";
+import { BufferGeometry, Vector3 } from "three";
 
 const Bat = (props: {
   position: [number, number, number];
   id: string;
   flip: boolean;
 }) => {
+  const { nodes } = useGLTF("/bat.glb");
+  const bat = nodes.Bat as unknown as { geometry: BufferGeometry };
   const shadowOffset = useRef(Math.random() * 0.01);
   const texture = useTexture("/Shadow.png");
   const rigidBody = useRef<RapierRigidBody>(null);
@@ -64,8 +66,7 @@ const Bat = (props: {
     >
       <group scale={0.5} position={[0, 1.5, 0]}>
         <BallCollider args={[0.5]} position={[0, 1.5, 0]} />
-        <mesh>
-          <boxGeometry args={[1, 1, 1]} />
+        <mesh geometry={bat.geometry} rotation={[0, Math.PI / 2, 0]}>
           <meshStandardMaterial color="#696969" />
         </mesh>
       </group>

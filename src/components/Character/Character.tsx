@@ -3,7 +3,7 @@ import { CONTROLS } from "@/constants/controls";
 import { GROUND_LEVEL } from "@/constants/ground";
 import { actions, gameStore, useGameStore } from "@/stores/gameStore";
 import { animated, useSpring } from "@react-spring/three";
-import { useKeyboardControls, useTexture } from "@react-three/drei";
+import { useGLTF, useKeyboardControls, useTexture } from "@react-three/drei";
 import {
   CuboidCollider,
   RapierCollider,
@@ -13,7 +13,14 @@ import {
   useBeforePhysicsStep,
 } from "@react-three/rapier";
 import { useEffect, useRef } from "react";
-import { Group, Matrix4, MeshBasicMaterial, Quaternion, Vector3 } from "three";
+import {
+  BufferGeometry,
+  Group,
+  Matrix4,
+  MeshBasicMaterial,
+  Quaternion,
+  Vector3,
+} from "three";
 import { clamp } from "three/src/math/MathUtils.js";
 import vertexShader from "@/shaders/beam/vertex.glsl";
 import fragmentShader from "@/shaders/beam/fragment.glsl";
@@ -41,6 +48,17 @@ const _rotationQuat = new Quaternion();
 const _rotation = new Matrix4();
 
 const Character = () => {
+  const { nodes } = useGLTF("/broom.glb");
+  const broom = nodes.Broom as unknown as { geometry: BufferGeometry };
+  const character = nodes.Character as unknown as { geometry: BufferGeometry };
+
+  const { nodes: hatNodes } = useGLTF("/hat.glb");
+  const hat = hatNodes.Hat as unknown as { geometry: BufferGeometry };
+  const hatBand = hatNodes.HatBand as unknown as { geometry: BufferGeometry };
+  const hatBuckle = hatNodes.HatBuckle as unknown as {
+    geometry: BufferGeometry;
+  };
+
   const texture = useTexture("/Shadow.png");
   const rigidBody = useRef<RapierRigidBody>(null);
   const characterCollider = useRef<RapierCollider>(null);
@@ -250,8 +268,9 @@ const Character = () => {
         <group position={[0, 1, 0]}>
           <CuboidCollider
             ref={characterCollider}
-            args={[0.5, 0.5, 0.5]}
+            args={[0.35, 0.5, 1.5]}
             collisionGroups={interactionGroups(CollisionGroup.Character)}
+            mass={1}
           />
           <animated.mesh
             ref={(ref) => {
@@ -263,13 +282,45 @@ const Character = () => {
             rotation={
               rotationSpring.rotation as unknown as [number, number, number]
             }
+            geometry={broom.geometry}
           >
-            <boxGeometry args={[1, 1, 1]} />
             <animated.meshStandardMaterial
               color="#c33ade"
               transparent
               opacity={opacitySpring.opacity}
             />
+            <mesh geometry={character.geometry}>
+              <animated.meshStandardMaterial
+                color="#ffffff"
+                transparent
+                opacity={opacitySpring.opacity}
+              />
+              <mesh
+                geometry={hat.geometry}
+                position={[0, 0.85, 0]}
+                rotation={[0, Math.PI / 3, 0]}
+              >
+                <animated.meshStandardMaterial
+                  color="#000000"
+                  transparent
+                  opacity={opacitySpring.opacity}
+                />
+                <mesh geometry={hatBand.geometry}>
+                  <animated.meshStandardMaterial
+                    color="#c33ade"
+                    transparent
+                    opacity={opacitySpring.opacity}
+                  />
+                  <mesh geometry={hatBuckle.geometry}>
+                    <animated.meshStandardMaterial
+                      color="#ffe607"
+                      transparent
+                      opacity={opacitySpring.opacity}
+                    />
+                  </mesh>
+                </mesh>
+              </mesh>
+            </mesh>
           </animated.mesh>
           <group ref={tractorBeam}>
             <mesh
