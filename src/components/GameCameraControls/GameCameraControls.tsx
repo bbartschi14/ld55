@@ -1,7 +1,7 @@
-import { gameStore } from "@/stores/gameStore";
+import { gameStore, useGameStore } from "@/stores/gameStore";
 import { CameraControls } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Vector3 } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
 
@@ -14,6 +14,12 @@ const _forward = new Vector3();
 
 const GameCameraControls = () => {
   const ref = useRef<CameraControls>(null!);
+  const spawnPoint = useGameStore((state) => state.spawnPoint);
+
+  useEffect(() => {
+    ref.current.moveTo(spawnPoint[0], spawnPoint[1], spawnPoint[2], false);
+  }, [spawnPoint]);
+
   useFrame(() => {
     const character = gameStore.getState().references.character;
 

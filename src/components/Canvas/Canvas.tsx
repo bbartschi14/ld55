@@ -49,6 +49,7 @@ const Canvas = () => {
                   key={bat.id}
                   position={[bat.spawnPoint[0], 0, bat.spawnPoint[1]]}
                   id={bat.id}
+                  flip={bat.flip ?? false}
                 />
               ))}
               <Character />

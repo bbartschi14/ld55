@@ -1,39 +1,34 @@
 import BoundsWall from "@/components/Bounds/BoundsWall";
+import { LEVELS } from "@/levels/level";
+import { useGameStore } from "@/stores/gameStore";
 
-const thickness = 2;
 const Bounds = () => {
-  return (
-    <>
-      <BoundsWall
-        x={-10}
-        z={0}
-        width={thickness}
-        height={thickness}
-        depth={30}
-      />
-      <BoundsWall
-        x={200}
-        z={0}
-        width={thickness}
-        height={thickness}
-        depth={30}
-      />
-      <BoundsWall
-        x={95}
-        z={15}
-        width={210}
-        height={thickness}
-        depth={thickness}
-      />
-      <BoundsWall
-        x={95}
-        z={-15}
-        width={210}
-        height={thickness}
-        depth={thickness}
-      />
-    </>
-  );
+  const currentLevel = useGameStore((state) => state.currentLevel);
+
+  if (currentLevel !== null && LEVELS[currentLevel] !== undefined) {
+    const boundsData = LEVELS[currentLevel].bounds;
+
+    return (
+      <>
+        <BoundsWall
+          x={0}
+          z={-boundsData.top[2]}
+          width={2000}
+          height={5}
+          depth={1}
+        />
+        <BoundsWall
+          x={0}
+          z={-boundsData.bottom[2]}
+          width={2000}
+          height={5}
+          depth={1}
+        />
+      </>
+    );
+  }
+
+  return null;
 };
 
 export default Bounds;

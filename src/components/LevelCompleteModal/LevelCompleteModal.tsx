@@ -28,7 +28,7 @@ const LevelCompleteModal = () => {
         <Text fz="3rem" ta="center">
           {formatTime(levelTime)}
         </Text>
-        <Button onClick={() => actions.reset()}>Reset</Button>
+        <Button onClick={() => actions.resetLevel()}>Reset</Button>
       </Stack>
     </Modal>
   );

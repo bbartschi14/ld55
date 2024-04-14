@@ -11,31 +11,15 @@ import {
 import { useRef } from "react";
 import { Vector3 } from "three";
 
-// const randomVectorOnUnitCircle = () => {
-//   const angle = Math.random() * Math.PI * 2;
-//   return [Math.cos(angle), Math.sin(angle)];
-// };
-
-const DIRECTIONS = [
-  // new Vector3(1, 0, 0),
-  // new Vector3(-1, 0, 0),
-  new Vector3(0, 0, 1),
-  new Vector3(0, 0, -1),
-  // new Vector3(1, 0, 1),
-  // new Vector3(-1, 0, -1),
-];
-
-const createRandomVector3 = () => {
-  return new Vector3().copy(
-    DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)]
-  );
-};
-
-const Bat = (props: { position: [number, number, number]; id: string }) => {
+const Bat = (props: {
+  position: [number, number, number];
+  id: string;
+  flip: boolean;
+}) => {
   const shadowOffset = useRef(Math.random() * 0.01);
   const texture = useTexture("/Shadow.png");
   const rigidBody = useRef<RapierRigidBody>(null);
-  const wanderDirection = useRef(createRandomVector3());
+  const wanderDirection = useRef(new Vector3(0, 0, props.flip ? -1 : 1));
   const speed = useRef(5);
 
   useBeforePhysicsStep(() => {

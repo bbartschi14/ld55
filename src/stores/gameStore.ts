@@ -2,26 +2,31 @@ import { createStore, useStore } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { v4 as uuid } from "uuid";
 import { Object3D } from "three";
+import { LEVELS, LevelData } from "@/levels/level";
 
 export interface GameActions {
   reachGoal: () => void;
   hitBat: (id: string) => void;
   addTime: (time: number) => void;
-  reset: () => void;
+  setLevel: (level: LevelData) => void;
+  resetLevel: () => void;
 }
 
 export interface GameState {
   runId: string;
+  currentLevel: number | null;
   score: number;
   levelTime: number;
   bats: {
     id: string;
     spawnPoint: [number, number];
+    flip?: boolean;
   }[];
   currentGoal: number | null;
   goals: {
     position: [number, number, number];
   }[];
+  spawnPoint: [number, number, number];
   characterState: "default" | "hit" | "finished";
 }
 
@@ -29,45 +34,15 @@ export interface GameReferences {
   character: Object3D | null;
 }
 
-const initialGoals: {
-  position: [number, number, number];
-}[] = [
-  { position: [15, 0, 0] },
-  { position: [45, 0, -5] },
-  { position: [80, 0, 5] },
-  { position: [105, 0, 0] },
-  { position: [140, 0, -5] },
-  { position: [165, 0, 0] },
-  { position: [190, 0, 5] },
-];
-
-const generateBats = (
-  minX: number,
-  maxX: number,
-  minZ: number,
-  maxZ: number,
-  batCount: number
-) => {
-  const bats = [];
-  for (let i = 0; i < batCount; i++) {
-    bats.push({
-      id: uuid(),
-      spawnPoint: [
-        Math.random() * (maxX - minX) + minX,
-        Math.random() * (maxZ - minZ) + minZ,
-      ] as [number, number],
-    });
-  }
-  return bats;
-};
-
 const initialGameState: GameState = {
+  currentLevel: null,
   runId: uuid(),
   score: 0,
   levelTime: 0,
-  bats: generateBats(5, 190, -10, 10, 50),
+  bats: [],
   currentGoal: 0,
-  goals: initialGoals,
+  goals: [],
+  spawnPoint: [0, 0, 0],
   characterState: "default",
 };
 
@@ -109,9 +84,30 @@ export const gameStore = createStore<
       addTime: (time: number) => {
         set({ levelTime: get().levelTime + time });
       },
-      reset: () => {
+      resetLevel: () => {
+        const level = get().currentLevel;
+        const data = LEVELS[level ?? 0];
+
+        get().actions.setLevel(data);
+      },
+      setLevel: (level: LevelData) => {
         const nextRunId = uuid();
-        set({ ...initialGameState, runId: nextRunId });
+
+        set({
+          runId: nextRunId,
+          currentLevel: level.level,
+          goals: level.goals,
+          bats: level.bats.map((bat) => ({
+            id: uuid(),
+            spawnPoint: [bat.position[0], bat.position[2]],
+            flip: bat.flip,
+          })),
+          currentGoal: 0,
+          score: 0,
+          levelTime: 0,
+          spawnPoint: level.player,
+          characterState: "default",
+        });
       },
     },
   }))

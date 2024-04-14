@@ -52,6 +52,7 @@ const Character = () => {
 
   const currentGoal = useGameStore((state) => state.currentGoal);
   const characterState = useGameStore((state) => state.characterState);
+  const spawnPoint = useGameStore((state) => state.spawnPoint);
 
   const [, tractorBeamSpringApi] = useSpring(() => ({
     opacity: 0.5,
@@ -238,7 +239,7 @@ const Character = () => {
           });
         }
       }}
-      position={[0, 0, 0]}
+      position={spawnPoint}
       rotation={[0, -Math.PI / 2, 0]}
     >
       <group>
