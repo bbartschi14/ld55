@@ -89,6 +89,7 @@ const Countdown = () => {
             ta="center"
             fz="5rem"
             c="white"
+            fw={900}
             style={{ textShadow: "0px 0px 32px #ffffff91" }}
           >
             3

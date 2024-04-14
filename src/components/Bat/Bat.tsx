@@ -3,6 +3,7 @@ import { GROUND_LEVEL } from "@/constants/ground";
 import { actions } from "@/stores/gameStore";
 import { useTexture } from "@react-three/drei";
 import {
+  BallCollider,
   RapierRigidBody,
   RigidBody,
   interactionGroups,
@@ -38,7 +39,7 @@ const Bat = (props: {
   return (
     <RigidBody
       position={props.position}
-      colliders="ball"
+      colliders={false}
       linearVelocity={[
         wanderDirection.current.x * speed.current,
         wanderDirection.current.y * speed.current,
@@ -62,6 +63,7 @@ const Bat = (props: {
       ref={rigidBody}
     >
       <group scale={0.5} position={[0, 1.5, 0]}>
+        <BallCollider args={[0.5]} position={[0, 1.5, 0]} />
         <mesh>
           <boxGeometry args={[1, 1, 1]} />
           <meshStandardMaterial color="#696969" />
