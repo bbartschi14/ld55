@@ -50,6 +50,7 @@ const _rotation = new Matrix4();
 const Character = () => {
   const { nodes } = useGLTF("/broom.glb");
   const broom = nodes.Broom as unknown as { geometry: BufferGeometry };
+  const bristles = nodes.Bristles as unknown as { geometry: BufferGeometry };
   const character = nodes.Character as unknown as { geometry: BufferGeometry };
 
   const { nodes: hatNodes } = useGLTF("/hat.glb");
@@ -285,10 +286,17 @@ const Character = () => {
             geometry={broom.geometry}
           >
             <animated.meshStandardMaterial
-              color="#c33ade"
+              color="#c68426"
               transparent
               opacity={opacitySpring.opacity}
             />
+            <mesh geometry={bristles.geometry}>
+              <animated.meshStandardMaterial
+                color="#f4b55b"
+                transparent
+                opacity={opacitySpring.opacity}
+              />
+            </mesh>
             <mesh geometry={character.geometry}>
               <animated.meshStandardMaterial
                 color="#ffffff"
@@ -299,6 +307,7 @@ const Character = () => {
                 geometry={hat.geometry}
                 position={[0, 0.85, 0]}
                 rotation={[0, Math.PI / 3, 0]}
+                scale={1.2}
               >
                 <animated.meshStandardMaterial
                   color="#000000"
