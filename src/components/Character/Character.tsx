@@ -297,7 +297,7 @@ const Character = () => {
                 opacity={opacitySpring.opacity}
               />
             </mesh>
-            <mesh geometry={character.geometry}>
+            <mesh geometry={character.geometry} scale={1.7}>
               <animated.meshStandardMaterial
                 color="#ffffff"
                 transparent
@@ -307,7 +307,7 @@ const Character = () => {
                 geometry={hat.geometry}
                 position={[0, 0.85, 0]}
                 rotation={[0, Math.PI / 3, 0]}
-                scale={1.2}
+                scale={1.1}
               >
                 <animated.meshStandardMaterial
                   color="#000000"

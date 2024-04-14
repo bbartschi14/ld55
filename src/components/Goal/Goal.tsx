@@ -15,7 +15,7 @@ const Goal = (props: GoalProps) => {
 
   return (
     <group {...props}>
-      <group scale={[2, 2, 2]}>
+      <group scale={2.3} position={[0, 1, 0]}>
         <RigidBody
           type="fixed"
           name="goal"

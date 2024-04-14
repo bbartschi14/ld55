@@ -7,18 +7,35 @@ import { degToRad } from "three/src/math/MathUtils.js";
 
 const CAMERA_POLAR_ANGLE = degToRad(40);
 const CAMERA_AZIMUTH_ANGLE = degToRad(0);
-const CAMERA_DISTANCE = 60;
+const CAMERA_DISTANCE = 40;
 
 const _target = new Vector3();
 const _forward = new Vector3();
+
+const LEAD_AMOUNT = 15;
+const VERTICAL_LEAD_AMOUNT = 2;
 
 const GameCameraControls = () => {
   const ref = useRef<CameraControls>(null!);
   const spawnPoint = useGameStore((state) => state.spawnPoint);
 
   useEffect(() => {
-    ref.current.moveTo(spawnPoint[0], spawnPoint[1] + 10, spawnPoint[2], false);
-    ref.current.moveTo(spawnPoint[0], spawnPoint[1], spawnPoint[2], true);
+    ref.current.disconnect();
+
+    ref.current.moveTo(
+      spawnPoint[0] + LEAD_AMOUNT,
+      spawnPoint[1] + 10,
+      spawnPoint[2] + VERTICAL_LEAD_AMOUNT,
+      false
+    );
+    ref.current.dollyTo(CAMERA_DISTANCE + 40, false);
+    ref.current.moveTo(
+      spawnPoint[0] + LEAD_AMOUNT,
+      spawnPoint[1],
+      spawnPoint[2] + VERTICAL_LEAD_AMOUNT,
+      true
+    );
+    ref.current.dollyTo(CAMERA_DISTANCE, true);
   }, [spawnPoint]);
 
   useFrame(() => {
@@ -26,7 +43,12 @@ const GameCameraControls = () => {
 
     if (character) {
       character.getWorldPosition(_target);
-      ref.current.moveTo(_target.x, _target.y, _target.z, true);
+      ref.current.moveTo(
+        _target.x + LEAD_AMOUNT,
+        _target.y,
+        _target.z + VERTICAL_LEAD_AMOUNT,
+        true
+      );
 
       character.getWorldDirection(_forward);
     }
