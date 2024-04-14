@@ -1,4 +1,4 @@
-import { gameStore } from "@/store/gameStore";
+import { gameStore } from "@/stores/gameStore";
 import { CameraControls } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";
@@ -33,7 +33,6 @@ const GameCameraControls = () => {
       // maxDistance={CAMERA_DISTANCE + 25}
       azimuthAngle={CAMERA_AZIMUTH_ANGLE}
       smoothTime={1}
-      polarRotateSpeed={0.1}
     />
   );
 };

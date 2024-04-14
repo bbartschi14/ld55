@@ -1,4 +1,4 @@
-import { actions, gameStore } from "@/store/gameStore";
+import { actions, gameStore } from "@/stores/gameStore";
 import { useFrame } from "@react-three/fiber";
 
 const TimeManager = () => {

@@ -1,8 +1,9 @@
 import { CollisionGroup } from "@/constants/collisions";
 import { CONTROLS } from "@/constants/controls";
-import { actions, gameStore, useGameStore } from "@/store/gameStore";
+import { GROUND_LEVEL } from "@/constants/ground";
+import { actions, gameStore, useGameStore } from "@/stores/gameStore";
 import { animated, useSpring } from "@react-spring/three";
-import { useKeyboardControls } from "@react-three/drei";
+import { useKeyboardControls, useTexture } from "@react-three/drei";
 import {
   CuboidCollider,
   RapierCollider,
@@ -12,8 +13,23 @@ import {
   useBeforePhysicsStep,
 } from "@react-three/rapier";
 import { useEffect, useRef } from "react";
-import { Group, Matrix4, Quaternion, Vector3 } from "three";
+import { Group, Matrix4, MeshBasicMaterial, Quaternion, Vector3 } from "three";
 import { clamp } from "three/src/math/MathUtils.js";
+import vertexShader from "@/shaders/beam/vertex.glsl";
+import fragmentShader from "@/shaders/beam/fragment.glsl";
+import CustomShaderMaterial from "three-custom-shader-material/vanilla";
+
+const BeamMaterial = new CustomShaderMaterial({
+  vertexShader,
+  fragmentShader,
+  baseMaterial: MeshBasicMaterial,
+  uniforms: {
+    uTime: { value: 0 },
+    uLength: { value: 1 },
+  },
+  opacity: 0.5,
+  transparent: true,
+});
 
 const _position = new Vector3();
 const _targetPosition = new Vector3();
@@ -25,9 +41,10 @@ const _rotationQuat = new Quaternion();
 const _rotation = new Matrix4();
 
 const Character = () => {
+  const texture = useTexture("/Shadow.png");
   const rigidBody = useRef<RapierRigidBody>(null);
   const characterCollider = useRef<RapierCollider>(null);
-  const tractorBeam = useRef<Group>(null!);
+  const tractorBeam = useRef<Group>(null);
 
   const impulseVelocity = useRef(0);
   const horizontalVelocity = useRef(0);
@@ -36,8 +53,11 @@ const Character = () => {
   const currentGoal = useGameStore((state) => state.currentGoal);
   const characterState = useGameStore((state) => state.characterState);
 
-  const [tractorBeamSpring, tractorBeamSpringApi] = useSpring(() => ({
+  const [, tractorBeamSpringApi] = useSpring(() => ({
     opacity: 0.5,
+    onChange: (props) => {
+      BeamMaterial.opacity = props.value.opacity;
+    },
   }));
 
   const [opacitySpring, opacitySpringApi] = useSpring(() => ({
@@ -122,7 +142,8 @@ const Character = () => {
       _left.copy(_up).cross(_direction).normalize();
 
       // Set tractor beam force
-      const maxForwardVelocity = 250;
+      const maxForwardVelocity = 400;
+      const maxBackwardVelocity = -200;
       const forwardAcceleration = 25;
       const baseSpeed = 400;
       if (forwardPressed) {
@@ -138,7 +159,7 @@ const Character = () => {
 
       forwardVelocity.current = clamp(
         forwardVelocity.current,
-        -maxForwardVelocity,
+        maxBackwardVelocity,
         maxForwardVelocity
       );
 
@@ -190,6 +211,7 @@ const Character = () => {
 
       if (tractorBeam.current) {
         tractorBeam.current.scale.z = distance;
+        BeamMaterial.uniforms.uLength.value = distance;
       }
     }
   });
@@ -247,14 +269,23 @@ const Character = () => {
           <group ref={tractorBeam}>
             <mesh position={[0, 0, -0.5]} rotation={[Math.PI / 2, 0, 0]}>
               <cylinderGeometry args={[0.1, 0.1, 1]} />
-              <animated.meshStandardMaterial
-                color="#c33ade"
-                transparent
-                opacity={tractorBeamSpring.opacity}
-              />
+
+              <primitive object={BeamMaterial} />
             </mesh>
           </group>
         </group>
+        <mesh
+          position={[0, GROUND_LEVEL + 0.1, 0]}
+          rotation={[-Math.PI / 2, 0, 0]}
+        >
+          <planeGeometry args={[2, 2]} />
+          <meshBasicMaterial
+            color={"#000000"}
+            transparent
+            opacity={0.1}
+            map={texture}
+          />
+        </mesh>
       </group>
     </RigidBody>
   );

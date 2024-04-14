@@ -1,4 +1,4 @@
-import { gameStore } from "@/store/gameStore";
+import { gameStore } from "@/stores/gameStore";
 import { Text } from "@mantine/core";
 import { useEffect, useRef } from "react";
 

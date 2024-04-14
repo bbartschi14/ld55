@@ -1,5 +1,7 @@
 import { CollisionGroup } from "@/constants/collisions";
-import { actions } from "@/store/gameStore";
+import { GROUND_LEVEL } from "@/constants/ground";
+import { actions } from "@/stores/gameStore";
+import { useTexture } from "@react-three/drei";
 import {
   RapierRigidBody,
   RigidBody,
@@ -30,6 +32,8 @@ const createRandomVector3 = () => {
 };
 
 const Bat = (props: { position: [number, number, number]; id: string }) => {
+  const shadowOffset = useRef(Math.random() * 0.01);
+  const texture = useTexture("/Shadow.png");
   const rigidBody = useRef<RapierRigidBody>(null);
   const wanderDirection = useRef(createRandomVector3());
   const speed = useRef(5);
@@ -79,6 +83,18 @@ const Bat = (props: { position: [number, number, number]; id: string }) => {
           <meshStandardMaterial color="#696969" />
         </mesh>
       </group>
+      <mesh
+        position={[0, GROUND_LEVEL + shadowOffset.current, 0]}
+        rotation={[-Math.PI / 2, 0, 0]}
+      >
+        <planeGeometry args={[1.5, 1.5]} />
+        <meshBasicMaterial
+          color={"#000000"}
+          transparent
+          opacity={0.1}
+          map={texture}
+        />
+      </mesh>
     </RigidBody>
   );
 };

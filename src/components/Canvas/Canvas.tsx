@@ -10,11 +10,12 @@ import Goal from "@/components/Goal/Goal";
 import { Physics } from "@react-three/rapier";
 import { Suspense } from "react";
 import { CONTROLS_MAP } from "@/constants/controls";
-import { useGameStore } from "@/store/gameStore";
+import { useGameStore } from "@/stores/gameStore";
 import Bat from "@/components/Bat/Bat";
 import Bounds from "@/components/Bounds/Bounds";
 import GameCameraControls from "@/components/GameCameraControls/GameCameraControls";
 import TimeManager from "@/components/TimeManager/TimeManager";
+import Ground from "@/components/Ground/Ground";
 
 THREE.ColorManagement.enabled = true;
 
@@ -50,9 +51,8 @@ const Canvas = () => {
                   id={bat.id}
                 />
               ))}
-
               <Character />
-              {/* <Ground /> */}
+              <Ground />
               <ambientLight intensity={Math.PI / 3} />
               <directionalLight position={[0, 5, 5]} intensity={1} />
             </KeyboardControls>

@@ -1,4 +1,4 @@
-import { useGameStore } from "@/store/gameStore";
+import { useGameStore } from "@/stores/gameStore";
 import * as classes from "./Hud.css";
 import { Text } from "@mantine/core";
 import Timer from "@/components/Timer/Timer";

@@ -1,5 +1,5 @@
 import { formatTime } from "@/components/Timer/Timer";
-import { actions, useGameStore } from "@/store/gameStore";
+import { actions, useGameStore } from "@/stores/gameStore";
 import { Button, Modal, Stack, Text } from "@mantine/core";
 
 const scaleY = {
