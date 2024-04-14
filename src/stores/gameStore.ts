@@ -27,7 +27,7 @@ export interface GameState {
     position: [number, number, number];
   }[];
   spawnPoint: [number, number, number];
-  characterState: "default" | "hit" | "finished";
+  characterState: "wait" | "default" | "hit" | "finished";
 }
 
 export interface GameReferences {
@@ -43,7 +43,7 @@ const initialGameState: GameState = {
   currentGoal: 0,
   goals: [],
   spawnPoint: [0, 0, 0],
-  characterState: "default",
+  characterState: "wait",
 };
 
 export const gameStore = createStore<
@@ -106,8 +106,12 @@ export const gameStore = createStore<
           score: 0,
           levelTime: 0,
           spawnPoint: level.player,
-          characterState: "default",
+          characterState: "wait",
         });
+
+        setTimeout(() => {
+          set({ characterState: "default" });
+        }, 3000);
       },
     },
   }))

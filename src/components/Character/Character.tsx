@@ -111,7 +111,11 @@ const Character = () => {
   }, [characterState, characterCollider, opacitySpringApi]);
 
   useBeforePhysicsStep(() => {
-    if (rigidBody.current && currentGoal !== null) {
+    if (
+      rigidBody.current &&
+      currentGoal !== null &&
+      characterState !== "wait"
+    ) {
       // Reset forces
       rigidBody.current.resetForces(true);
       rigidBody.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
@@ -268,7 +272,11 @@ const Character = () => {
             />
           </animated.mesh>
           <group ref={tractorBeam}>
-            <mesh position={[0, 0, -0.5]} rotation={[Math.PI / 2, 0, 0]}>
+            <mesh
+              position={[0, 0, -0.5]}
+              rotation={[Math.PI / 2, 0, 0]}
+              visible={characterState !== "wait"}
+            >
               <cylinderGeometry args={[0.1, 0.1, 1]} />
               <primitive object={BeamMaterial} />
             </mesh>

@@ -4,7 +4,7 @@ import { useFrame } from "@react-three/fiber";
 const TimeManager = () => {
   useFrame((_state, delta) => {
     const state = gameStore.getState().characterState;
-    if (state !== "finished") {
+    if (state !== "finished" && state !== "wait") {
       actions.addTime(delta);
     }
   });

@@ -3,6 +3,7 @@ import * as classes from "./Hud.css";
 import { Text } from "@mantine/core";
 import Timer from "@/components/Timer/Timer";
 import LevelCompleteModal from "@/components/LevelCompleteModal/LevelCompleteModal";
+import Countdown from "@/components/Countdown/Countdown";
 
 /**
  * Root HUD
@@ -18,6 +19,7 @@ export const Hud = () => {
           <Text fz="3rem">{`${score} of ${goals.length}`}</Text>
           <Timer />
         </div>
+        <Countdown />
       </div>
       <LevelCompleteModal />
     </>
