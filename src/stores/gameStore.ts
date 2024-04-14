@@ -111,7 +111,7 @@ export const gameStore = createStore<
 
         setTimeout(() => {
           set({ characterState: "default" });
-        }, 3000);
+        }, 4000);
       },
     },
   }))

@@ -35,8 +35,7 @@ const Countdown = () => {
     };
 
     if (characterState === "wait") {
-      let count = 3;
-      updateText(count);
+      let count = 4;
       const interval = setInterval(() => {
         count -= 1;
         updateText(count);
@@ -45,7 +44,7 @@ const Countdown = () => {
         }
       }, 1000);
       return () => {
-        if (textCurrent) {
+        if (textCurrent && count === 1) {
           textCurrent.textContent = "GO";
 
           api.start({
@@ -75,25 +74,27 @@ const Countdown = () => {
 
   return (
     <Center w="100dvw" h="100dvh">
-      <animated.div
-        style={{
-          opacity: styles.opacity,
-          transform: to(
-            [styles.transform, styles.scale],
-            (t, s) => `translateY(-${t * 100}%) scale(${s})`
-          ),
-        }}
-      >
-        <Text
-          ref={text}
-          ta="center"
-          fz="5rem"
-          c="white"
-          style={{ textShadow: "0px 0px 32px #ffffff91" }}
+      <div style={{ transform: "translateY(-10dvh)" }}>
+        <animated.div
+          style={{
+            opacity: styles.opacity,
+            transform: to(
+              [styles.transform, styles.scale],
+              (t, s) => `translateY(-${t * 100}%) scale(${s})`
+            ),
+          }}
         >
-          3
-        </Text>
-      </animated.div>
+          <Text
+            ref={text}
+            ta="center"
+            fz="5rem"
+            c="white"
+            style={{ textShadow: "0px 0px 32px #ffffff91" }}
+          >
+            3
+          </Text>
+        </animated.div>
+      </div>
     </Center>
   );
 };

@@ -17,7 +17,8 @@ const GameCameraControls = () => {
   const spawnPoint = useGameStore((state) => state.spawnPoint);
 
   useEffect(() => {
-    ref.current.moveTo(spawnPoint[0], spawnPoint[1], spawnPoint[2], false);
+    ref.current.moveTo(spawnPoint[0], spawnPoint[1] + 10, spawnPoint[2], false);
+    ref.current.moveTo(spawnPoint[0], spawnPoint[1], spawnPoint[2], true);
   }, [spawnPoint]);
 
   useFrame(() => {
