@@ -25,6 +25,8 @@ import { clamp } from "three/src/math/MathUtils.js";
 import vertexShader from "@/shaders/beam/vertex.glsl";
 import fragmentShader from "@/shaders/beam/fragment.glsl";
 import CustomShaderMaterial from "three-custom-shader-material/vanilla";
+import { useFrame } from "@react-three/fiber";
+import { useKeyStore } from "@/stores/keyStore";
 
 const BeamMaterial = new CustomShaderMaterial({
   vertexShader,
@@ -86,12 +88,27 @@ const Character = () => {
     immediate: false,
   }));
 
-  const forwardPressed = useKeyboardControls(
+  const forwardKeyPressed = useKeyboardControls(
     (state) => state[CONTROLS.forward]
   );
-  const backPressed = useKeyboardControls((state) => state[CONTROLS.back]);
-  const leftPressed = useKeyboardControls((state) => state[CONTROLS.left]);
-  const rightPressed = useKeyboardControls((state) => state[CONTROLS.right]);
+  const forwardButtonPressed = useKeyStore((state) => state.forwardPressed);
+
+  const forwardPressed = forwardKeyPressed || forwardButtonPressed;
+
+  const backKeyPressed = useKeyboardControls((state) => state[CONTROLS.back]);
+  const backButtonPressed = useKeyStore((state) => state.backPressed);
+
+  const backPressed = backKeyPressed || backButtonPressed;
+
+  const leftKeyPressed = useKeyboardControls((state) => state[CONTROLS.left]);
+  const leftButtonPressed = useKeyStore((state) => state.leftPressed);
+
+  const leftPressed = leftKeyPressed || leftButtonPressed;
+
+  const rightKeyPressed = useKeyboardControls((state) => state[CONTROLS.right]);
+  const rightButtonPressed = useKeyStore((state) => state.rightPressed);
+
+  const rightPressed = rightKeyPressed || rightButtonPressed;
 
   const rotationSpring = useSpring({
     rotation: [
@@ -223,20 +240,26 @@ const Character = () => {
 
       _prevQuat.copy(rigidBody.current.rotation());
       rigidBody.current.setRotation(_prevQuat.slerp(_rotationQuat, 0.1), true);
+    }
+  });
 
-      // Set tractor beam scale
-      const distance = _position.distanceTo(
-        new Vector3(
-          currentGoalPosition[0],
-          currentGoalPosition[1],
-          currentGoalPosition[2]
-        )
-      );
+  useFrame(() => {
+    if (currentGoal === null) return;
 
-      if (tractorBeam.current) {
-        tractorBeam.current.scale.z = distance;
-        BeamMaterial.uniforms.uLength.value = distance;
-      }
+    const currentGoalPosition =
+      gameStore.getState().goals[currentGoal].position;
+
+    // Set tractor beam scale
+    const distance = _position.distanceTo(
+      new Vector3(
+        currentGoalPosition[0],
+        currentGoalPosition[1],
+        currentGoalPosition[2]
+      )
+    );
+    if (tractorBeam.current) {
+      tractorBeam.current.scale.z = distance;
+      BeamMaterial.uniforms.uLength.value = distance;
     }
   });
 

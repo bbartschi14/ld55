@@ -4,6 +4,7 @@ import LevelCompleteModal from "@/components/LevelCompleteModal/LevelCompleteMod
 import Countdown from "@/components/Countdown/Countdown";
 import { Text } from "@mantine/core";
 import { useGameStore } from "@/stores/gameStore";
+import KeyControls from "@/components/KeyControls/KeyControls";
 
 /**
  * Root HUD
@@ -26,6 +27,7 @@ export const Hud = () => {
             {`Level ${currentLevel !== null ? currentLevel + 1 : 0}`}
           </Text>
         </div>
+        <KeyControls />
         <Countdown />
       </div>
       <LevelCompleteModal />

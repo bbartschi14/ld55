@@ -8,7 +8,7 @@ void main()
 
     float currentLocation = u * uLength;
 
-    float newOpacity = mod(currentLocation, 1.0);
+    float newOpacity = round(mod(currentLocation, 1.0));
 
     csm_FragColor = vec4(1.0, 1.0, 1.0, newOpacity * opacity);
 }

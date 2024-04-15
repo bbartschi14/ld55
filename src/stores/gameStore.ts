@@ -100,7 +100,7 @@ export const gameStore = createStore<
       },
       resetLevel: () => {
         const level = get().currentLevel;
-        const data = LEVELS[level ?? 0];
+        const data = LEVELS[level !== null ? level : 0];
 
         get().actions.setLevel(data);
       },
@@ -120,7 +120,6 @@ export const gameStore = createStore<
       },
       setLevel: (level: LevelData) => {
         const nextRunId = uuid();
-
         set({
           runId: nextRunId,
           currentLevel: level.level,
