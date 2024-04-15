@@ -25,8 +25,8 @@ import { clamp } from "three/src/math/MathUtils.js";
 import vertexShader from "@/shaders/beam/vertex.glsl";
 import fragmentShader from "@/shaders/beam/fragment.glsl";
 import CustomShaderMaterial from "three-custom-shader-material/vanilla";
-import { useFrame } from "@react-three/fiber";
 import { useKeyStore } from "@/stores/keyStore";
+import { useFrame } from "@react-three/fiber";
 
 const BeamMaterial = new CustomShaderMaterial({
   vertexShader,
@@ -48,6 +48,8 @@ const _up = new Vector3(0, 1, 0);
 const _prevQuat = new Quaternion();
 const _rotationQuat = new Quaternion();
 const _rotation = new Matrix4();
+
+const _halfwayPoint = new Vector3();
 
 const Character = () => {
   const { nodes } = useGLTF("/broom.glb");
@@ -248,8 +250,6 @@ const Character = () => {
 
     const currentGoalPosition =
       gameStore.getState().goals[currentGoal].position;
-
-    // Set tractor beam scale
     const distance = _position.distanceTo(
       new Vector3(
         currentGoalPosition[0],
@@ -258,130 +258,133 @@ const Character = () => {
       )
     );
     if (tractorBeam.current) {
+      _halfwayPoint.addVectors(_position, _targetPosition).multiplyScalar(0.5);
+      tractorBeam.current.position.copy(_halfwayPoint);
       tractorBeam.current.scale.z = distance;
+      tractorBeam.current.lookAt(_position);
       BeamMaterial.uniforms.uLength.value = distance;
     }
   });
 
   return (
-    <RigidBody
-      ref={rigidBody}
-      colliders={false}
-      lockRotations
-      name="character"
-      onIntersectionEnter={(p) => {
-        if (p.rigidBodyObject?.name === `goal-${currentGoal}`) {
-          rigidBody.current?.resetForces(true);
-          rigidBody.current?.setLinvel({ x: 0, y: 0, z: 0 }, true);
-          horizontalVelocity.current = 0;
+    <>
+      <group ref={tractorBeam}>
+        <mesh
+          position={[0, 1, 0]}
+          rotation={[Math.PI / 2, 0, 0]}
+          visible={characterState !== "wait" && characterState !== "finished"}
+        >
+          <cylinderGeometry args={[0.1, 0.1, 1]} />
+          <primitive object={BeamMaterial} />
+        </mesh>
+      </group>
+      <RigidBody
+        ref={rigidBody}
+        colliders={false}
+        lockRotations
+        name="character"
+        onIntersectionEnter={(p) => {
+          if (p.rigidBodyObject?.name === `goal-${currentGoal}`) {
+            rigidBody.current?.resetForces(true);
+            rigidBody.current?.setLinvel({ x: 0, y: 0, z: 0 }, true);
+            horizontalVelocity.current = 0;
 
-          actions.reachGoal();
+            actions.reachGoal();
 
-          impulseVelocity.current = 700;
-          tractorBeamSpringApi.start({
-            from: { opacity: 0 },
-            to: [{ opacity: 0.5 }],
-            config: { duration: 500 },
-          });
-        }
-      }}
-      position={spawnPoint}
-      rotation={[0, -Math.PI / 2, 0]}
-    >
-      <group>
-        <group position={[0, 1, 0]}>
-          <CuboidCollider
-            ref={characterCollider}
-            args={[0.35, 0.5, 1.5]}
-            collisionGroups={interactionGroups(CollisionGroup.Character)}
-            mass={1}
-          />
-          <animated.mesh
-            ref={(ref) => {
-              if (ref)
-                gameStore.setState(({ references }) => {
-                  references.character = ref;
-                });
-            }}
-            rotation={
-              rotationSpring.rotation as unknown as [number, number, number]
-            }
-            geometry={broom.geometry}
-          >
-            <animated.meshStandardMaterial
-              color="#c68426"
-              transparent
-              opacity={opacitySpring.opacity}
+            impulseVelocity.current = 700;
+            tractorBeamSpringApi.start({
+              from: { opacity: 0 },
+              to: [{ opacity: 0.5 }],
+              config: { duration: 500 },
+            });
+          }
+        }}
+        position={spawnPoint}
+        rotation={[0, -Math.PI / 2, 0]}
+      >
+        <group>
+          <group position={[0, 1, 0]}>
+            <CuboidCollider
+              ref={characterCollider}
+              args={[0.35, 0.5, 1.5]}
+              collisionGroups={interactionGroups(CollisionGroup.Character)}
+              mass={1}
             />
-            <mesh geometry={bristles.geometry}>
+            <animated.mesh
+              ref={(ref) => {
+                if (ref)
+                  gameStore.setState(({ references }) => {
+                    references.character = ref;
+                  });
+              }}
+              rotation={
+                rotationSpring.rotation as unknown as [number, number, number]
+              }
+              geometry={broom.geometry}
+            >
               <animated.meshStandardMaterial
-                color="#f4b55b"
+                color="#c68426"
                 transparent
                 opacity={opacitySpring.opacity}
               />
-            </mesh>
-            <mesh geometry={character.geometry} scale={1.7}>
-              <animated.meshStandardMaterial
-                color="#ffffff"
-                transparent
-                opacity={opacitySpring.opacity}
-              />
-              <mesh
-                geometry={hat.geometry}
-                position={[0, 0.85, 0]}
-                rotation={[0, Math.PI / 3, 0]}
-                scale={1.1}
-              >
+              <mesh geometry={bristles.geometry}>
                 <animated.meshStandardMaterial
-                  color="#000000"
+                  color="#f4b55b"
                   transparent
                   opacity={opacitySpring.opacity}
                 />
-                <mesh geometry={hatBand.geometry}>
+              </mesh>
+              <mesh geometry={character.geometry} scale={1.7}>
+                <animated.meshStandardMaterial
+                  color="#ffffff"
+                  transparent
+                  opacity={opacitySpring.opacity}
+                />
+                <mesh
+                  geometry={hat.geometry}
+                  position={[0, 0.85, 0]}
+                  rotation={[0, Math.PI / 3, 0]}
+                  scale={1.1}
+                >
                   <animated.meshStandardMaterial
-                    color="#c33ade"
+                    color="#000000"
                     transparent
                     opacity={opacitySpring.opacity}
                   />
-                  <mesh geometry={hatBuckle.geometry}>
+                  <mesh geometry={hatBand.geometry}>
                     <animated.meshStandardMaterial
-                      color="#ffe607"
+                      color="#c33ade"
                       transparent
                       opacity={opacitySpring.opacity}
                     />
+                    <mesh geometry={hatBuckle.geometry}>
+                      <animated.meshStandardMaterial
+                        color="#ffe607"
+                        transparent
+                        opacity={opacitySpring.opacity}
+                      />
+                    </mesh>
                   </mesh>
                 </mesh>
               </mesh>
-            </mesh>
-          </animated.mesh>
-          <group ref={tractorBeam}>
-            <mesh
-              position={[0, 0, -0.5]}
-              rotation={[Math.PI / 2, 0, 0]}
-              visible={
-                characterState !== "wait" && characterState !== "finished"
-              }
-            >
-              <cylinderGeometry args={[0.1, 0.1, 1]} />
-              <primitive object={BeamMaterial} />
-            </mesh>
+            </animated.mesh>
           </group>
+          <mesh
+            position={[0, GROUND_LEVEL + 0.1, 0]}
+            rotation={[-Math.PI / 2, 0, 0]}
+          >
+            <planeGeometry args={[2, 2]} />
+            <meshBasicMaterial
+              color={"#000000"}
+              transparent
+              opacity={0.1}
+              map={texture}
+              depthWrite={false}
+            />
+          </mesh>
         </group>
-        <mesh
-          position={[0, GROUND_LEVEL + 0.1, 0]}
-          rotation={[-Math.PI / 2, 0, 0]}
-        >
-          <planeGeometry args={[2, 2]} />
-          <meshBasicMaterial
-            color={"#000000"}
-            transparent
-            opacity={0.1}
-            map={texture}
-            depthWrite={false}
-          />
-        </mesh>
-      </group>
-    </RigidBody>
+      </RigidBody>
+    </>
   );
 };
 
