@@ -1,8 +1,5 @@
-"use client";
-
 import { Canvas as R3FCanvas } from "@react-three/fiber";
 import * as classes from "./Canvas.css";
-import { Perf } from "r3f-perf";
 import * as THREE from "three";
 import { KeyboardControls } from "@react-three/drei";
 import Character from "@/components/Character/Character";
@@ -16,12 +13,15 @@ import Bounds from "@/components/Bounds/Bounds";
 import GameCameraControls from "@/components/GameCameraControls/GameCameraControls";
 import TimeManager from "@/components/TimeManager/TimeManager";
 import Ground from "@/components/Ground/Ground";
+import Tree from "@/components/Tree/Tree";
+import { GROUND_LEVEL } from "@/constants/ground";
 
 THREE.ColorManagement.enabled = true;
 
 const Canvas = () => {
   const goals = useGameStore((state) => state.goals);
   const bats = useGameStore((state) => state.bats);
+  const trees = useGameStore((state) => state.trees);
   const runId = useGameStore((state) => state.runId);
 
   return (
@@ -31,7 +31,6 @@ const Canvas = () => {
         gl={{ powerPreference: "high-performance", antialias: false }}
         key={runId}
       >
-        <Perf />
         <Suspense>
           <Physics debug={false} gravity={[0, 0, 0]}>
             <TimeManager />
@@ -43,7 +42,12 @@ const Canvas = () => {
                 <Goal key={index} position={goal.position} index={index} />
               ))}
               <Bounds />
-
+              {trees.map((tree, index) => (
+                <Tree
+                  key={index}
+                  position={[tree.position[0], GROUND_LEVEL, tree.position[2]]}
+                />
+              ))}
               {bats.map((bat) => (
                 <Bat
                   key={bat.id}
@@ -52,6 +56,7 @@ const Canvas = () => {
                   flip={bat.flip ?? false}
                 />
               ))}
+
               <Character />
               <Ground />
               <ambientLight intensity={Math.PI / 3} />

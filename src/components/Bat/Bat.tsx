@@ -12,6 +12,8 @@ import {
 import { useRef } from "react";
 import { BufferGeometry, Vector3 } from "three";
 
+const _newDirection = new Vector3();
+
 const Bat = (props: {
   position: [number, number, number];
   id: string;
@@ -47,11 +49,12 @@ const Bat = (props: {
         wanderDirection.current.y * speed.current,
         wanderDirection.current.z * speed.current,
       ]}
-      onCollisionEnter={({ manifold, rigidBodyObject }) => {
+      onCollisionEnter={({ rigidBodyObject }) => {
         const name = rigidBodyObject?.name ?? "";
-        if (["bounds"].includes(name) && rigidBody.current) {
+        if (["bounds", "tree"].includes(name) && rigidBody.current) {
           // Flip direction
-          wanderDirection.current.copy(manifold.normal());
+          _newDirection.copy(wanderDirection.current).negate();
+          wanderDirection.current.copy(_newDirection);
         } else if (name === "character") {
           actions.hitBat(props.id);
         }
@@ -59,6 +62,7 @@ const Bat = (props: {
       collisionGroups={interactionGroups(CollisionGroup.Bat, [
         CollisionGroup.Bounds,
         CollisionGroup.Character,
+        CollisionGroup.Tree,
       ])}
       lockRotations
       name="bat"

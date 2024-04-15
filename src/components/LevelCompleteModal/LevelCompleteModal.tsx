@@ -1,6 +1,7 @@
 import { formatTime } from "@/components/Timer/Timer";
 import { actions, useGameStore } from "@/stores/gameStore";
-import { Button, Modal, Stack, Text } from "@mantine/core";
+import { Button, Center, Modal, Stack, Text } from "@mantine/core";
+import { useDebouncedValue } from "@mantine/hooks";
 
 const scaleY = {
   in: { opacity: 1, transform: "translateY(0vh)" },
@@ -11,6 +12,9 @@ const scaleY = {
 const LevelCompleteModal = () => {
   const characterState = useGameStore((state) => state.characterState);
   const levelTime = useGameStore((state) => state.levelTime);
+  const currentLevel = useGameStore((state) => state.currentLevel);
+
+  const [debouncedLevel] = useDebouncedValue(currentLevel, 1000);
 
   return (
     <Modal
@@ -19,16 +23,22 @@ const LevelCompleteModal = () => {
       centered
       withCloseButton={false}
       transitionProps={{ transition: scaleY, duration: 1000 }}
-      size="lg"
     >
-      <Stack>
+      <Stack pt="md">
         <Text fz="3rem" fw="bold" ta="center">
-          Level complete!
+          {`Level ${
+            debouncedLevel !== null ? debouncedLevel + 1 : 0
+          } complete!`}
         </Text>
         <Text fz="3rem" ta="center">
           {formatTime(levelTime)}
         </Text>
-        <Button onClick={() => actions.resetLevel()}>Reset</Button>
+        {/* <Button onClick={() => actions.resetLevel()}>Next Level</Button> */}
+        <Center pb="lg">
+          <Button onClick={() => actions.nextLevel()} size="xl">
+            Next Level
+          </Button>
+        </Center>
       </Stack>
     </Modal>
   );

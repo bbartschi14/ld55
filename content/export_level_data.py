@@ -8,6 +8,7 @@ bounds_top = bpy.data.objects.get("Bounds_Top")
 player = bpy.data.objects.get("Player")
 goals_collection = bpy.data.collections.get("Goals")
 bats_collection = bpy.data.collections.get("Bats")
+trees_collection = bpy.data.collections.get("Trees")
 
 # Initialize dictionary
 scene_data = {}
@@ -37,6 +38,13 @@ if bats_collection:
         bats_data.append({"position": list(obj.location), "flip": "flip" in obj.name})
     scene_data["bats"] = bats_data
 
+# Add trees data
+if trees_collection:
+    trees_data = []
+    for obj in trees_collection.objects:
+        trees_data.append({"position": list(obj.location)})
+    scene_data["trees"] = trees_data
+    
 # Convert dictionary to JSON
 json_data = json.dumps(scene_data, indent=4)
 

@@ -105,7 +105,7 @@ const Character = () => {
     if (characterState === "hit") {
       opacitySpringApi.start({
         from: { opacity: 1 },
-        to: { opacity: 0.75 },
+        to: { opacity: 0.5 },
         loop: { reverse: true },
         config: { duration: 150 },
       });
@@ -335,7 +335,9 @@ const Character = () => {
             <mesh
               position={[0, 0, -0.5]}
               rotation={[Math.PI / 2, 0, 0]}
-              visible={characterState !== "wait"}
+              visible={
+                characterState !== "wait" && characterState !== "finished"
+              }
             >
               <cylinderGeometry args={[0.1, 0.1, 1]} />
               <primitive object={BeamMaterial} />

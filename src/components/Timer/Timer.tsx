@@ -29,7 +29,15 @@ const Timer = () => {
   }, []);
 
   return (
-    <Text ref={text} fz="3rem">
+    <Text
+      ref={text}
+      fz="3rem"
+      c="white"
+      pl="md"
+      fw="500"
+      lts={"2px"}
+      style={{ textShadow: "2px 2px 4px #00000098" }}
+    >
       0:00:000
     </Text>
   );

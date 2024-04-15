@@ -20,7 +20,7 @@ const GameCameraControls = () => {
   const spawnPoint = useGameStore((state) => state.spawnPoint);
 
   useEffect(() => {
-    ref.current.disconnect();
+    // ref.current.disconnect();
 
     ref.current.moveTo(
       spawnPoint[0] + LEAD_AMOUNT,

@@ -117,6 +117,11 @@ const data: Omit<LevelData, "level"> = {
       flip: false,
     },
   ],
+  trees: [
+    {
+      position: [0.0, -36.47551345825195, 0.0],
+    },
+  ],
 };
 
 export default data;

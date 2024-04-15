@@ -1,4 +1,6 @@
 import level_1 from "@/levels/level_1";
+import level_2 from "@/levels/level_2";
+import level_3 from "@/levels/level_3";
 
 export type LevelData = {
   level: number;
@@ -13,6 +15,9 @@ export type LevelData = {
   bats: {
     position: [number, number, number];
     flip: boolean;
+  }[];
+  trees: {
+    position: [number, number, number];
   }[];
 };
 
@@ -35,7 +40,10 @@ const convertLevelCoordinates = (
       ...bat,
       position: [bat.position[1], 0, bat.position[0]],
     })),
+    trees: level.trees.map((tree) => ({
+      position: [tree.position[1], 0, tree.position[0]],
+    })),
   };
 };
 
-export const LEVELS = [level_1].map(convertLevelCoordinates);
+export const LEVELS = [level_1, level_2, level_3].map(convertLevelCoordinates);

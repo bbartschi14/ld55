@@ -3,4 +3,5 @@ export enum CollisionGroup {
   Goal = 2,
   Bat = 3,
   Bounds = 4,
+  Tree = 5,
 }

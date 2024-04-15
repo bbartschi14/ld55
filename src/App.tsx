@@ -4,14 +4,28 @@ import { theme } from "./styles/theme";
 import Canvas from "@/components/Canvas/Canvas";
 import { Hud } from "@/components/Hud/Hud";
 import LevelManager from "@/components/LevelManager/LevelManager";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "@/components/Home/Home";
 
 export default function App() {
   return (
-    <MantineProvider theme={theme}>
-      <Hud />
-      <LevelManager>
-        <Canvas />
-      </LevelManager>
-    </MantineProvider>
+    <Router>
+      <MantineProvider theme={theme}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route
+            path="/game"
+            element={
+              <>
+                <Hud />
+                <LevelManager>
+                  <Canvas />
+                </LevelManager>
+              </>
+            }
+          />
+        </Routes>
+      </MantineProvider>
+    </Router>
   );
 }

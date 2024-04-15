@@ -762,6 +762,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fontsource-variable/oswald@npm:^5.0.19":
+  version: 5.0.19
+  resolution: "@fontsource-variable/oswald@npm:5.0.19"
+  checksum: 10c0/7afa861cc035bea4c18b80847dbe2f3bbfc69fbfdcf542e2346ebbf879f958280eba2ae80f4ec74a9a50cc39cb3ea6d46c76e3f464a60bc1ec78e47bbbaa7485
+  languageName: node
+  linkType: hard
+
 "@humanwhocodes/config-array@npm:^0.11.14":
   version: 0.11.14
   resolution: "@humanwhocodes/config-array@npm:0.11.14"
@@ -1210,6 +1217,13 @@ __metadata:
     react: ">=18.0.0"
     three: ">=0.139.0"
   checksum: 10c0/b638c3bec39e9ce1596ecc0df66ca36f4e51787d0e248d19bde31d4d72c74582ca9d34fce878be554c8df15583d0843afcf52a6ca6485c981d28e1bee83b9246
+  languageName: node
+  linkType: hard
+
+"@remix-run/router@npm:1.15.3":
+  version: 1.15.3
+  resolution: "@remix-run/router@npm:1.15.3"
+  checksum: 10c0/aea197447cee21e137d70f0c93e00de70c64fcfae20ae349ade9dc4202e782bd94dbc88be7302d13b6aa6cde38a701b074cd8e09a161d14cecda832a36dd2695
   languageName: node
   linkType: hard
 
@@ -4031,6 +4045,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-router-dom@npm:^6.22.3":
+  version: 6.22.3
+  resolution: "react-router-dom@npm:6.22.3"
+  dependencies:
+    "@remix-run/router": "npm:1.15.3"
+    react-router: "npm:6.22.3"
+  peerDependencies:
+    react: ">=16.8"
+    react-dom: ">=16.8"
+  checksum: 10c0/39b0472db5d153cbbbf4f5df5c0b26f2b75ffd7b857d7b67d17e03f4618d806b957cf033fbeb265bb317ade951e6ce0d576311bdf6eb15a7013203079cfadf03
+  languageName: node
+  linkType: hard
+
+"react-router@npm:6.22.3":
+  version: 6.22.3
+  resolution: "react-router@npm:6.22.3"
+  dependencies:
+    "@remix-run/router": "npm:1.15.3"
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 10c0/a2c85c3d1fa93585e312b1f7e6e21d1ca421875013a8d879e109d3ed41fb035bc93faef4cd42b354ea18d039bc50b679bf752679ad83ac26a986e3432fbd0462
+  languageName: node
+  linkType: hard
+
 "react-style-singleton@npm:^2.2.1":
   version: 2.2.1
   resolution: "react-style-singleton@npm:2.2.1"
@@ -4863,6 +4901,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "vite-min-template@workspace:."
   dependencies:
+    "@fontsource-variable/oswald": "npm:^5.0.19"
     "@mantine/core": "npm:7.8.0"
     "@mantine/hooks": "npm:7.8.0"
     "@mantine/vanilla-extract": "npm:7.8.0"
@@ -4891,6 +4930,7 @@ __metadata:
     r3f-perf: "npm:^7.2.1"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
+    react-router-dom: "npm:^6.22.3"
     three: "npm:^0.163.0"
     three-custom-shader-material: "npm:^5.4.0"
     typescript: "npm:^5.4.2"

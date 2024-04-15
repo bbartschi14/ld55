@@ -10,6 +10,7 @@ export interface GameActions {
   addTime: (time: number) => void;
   setLevel: (level: LevelData) => void;
   resetLevel: () => void;
+  nextLevel: () => void;
 }
 
 export interface GameState {
@@ -24,6 +25,9 @@ export interface GameState {
   }[];
   currentGoal: number | null;
   goals: {
+    position: [number, number, number];
+  }[];
+  trees: {
     position: [number, number, number];
   }[];
   spawnPoint: [number, number, number];
@@ -42,6 +46,7 @@ const initialGameState: GameState = {
   bats: [],
   currentGoal: 0,
   goals: [],
+  trees: [],
   spawnPoint: [0, 0, 0],
   characterState: "wait",
 };
@@ -90,6 +95,20 @@ export const gameStore = createStore<
 
         get().actions.setLevel(data);
       },
+      nextLevel: () => {
+        const currentLevel = get().currentLevel;
+        if (currentLevel === null) {
+          return;
+        }
+
+        const nextLevel = currentLevel + 1;
+        if (nextLevel >= LEVELS.length) {
+          return;
+        }
+
+        const data = LEVELS[nextLevel];
+        get().actions.setLevel(data);
+      },
       setLevel: (level: LevelData) => {
         const nextRunId = uuid();
 
@@ -97,6 +116,7 @@ export const gameStore = createStore<
           runId: nextRunId,
           currentLevel: level.level,
           goals: level.goals,
+          trees: level.trees,
           bats: level.bats.map((bat) => ({
             id: uuid(),
             spawnPoint: [bat.position[0], bat.position[2]],
