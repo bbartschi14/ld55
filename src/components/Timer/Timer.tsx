@@ -36,7 +36,7 @@ const Timer = () => {
       pl="md"
       fw="500"
       lts={"2px"}
-      style={{ textShadow: "2px 2px 4px #00000098" }}
+      style={{ textShadow: "2px 2px 4px #00000065" }}
     >
       0:00:000
     </Text>

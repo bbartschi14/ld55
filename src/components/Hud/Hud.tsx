@@ -21,7 +21,7 @@ export const Hud = () => {
             pl="md"
             fw="500"
             lts={"2px"}
-            style={{ textShadow: "2px 2px 4px #00000098" }}
+            style={{ textShadow: "2px 2px 4px #00000065" }}
           >
             {`Level ${currentLevel !== null ? currentLevel + 1 : 0}`}
           </Text>

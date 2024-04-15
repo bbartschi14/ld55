@@ -2,14 +2,15 @@ import { ActionIcon, Affix } from "@mantine/core";
 import { Howler } from "howler";
 import { useEffect } from "react";
 import { SpeakerHigh, SpeakerSlash } from "@phosphor-icons/react";
-import { useToggle } from "@mantine/hooks";
+import { useDocumentVisibility, useToggle } from "@mantine/hooks";
 
 const AudioManager = () => {
   const [isMuted, toggle] = useToggle();
+  const documentState = useDocumentVisibility();
 
   useEffect(() => {
-    Howler.volume(isMuted ? 0 : 1);
-  }, [isMuted]);
+    Howler.volume(isMuted || documentState === "hidden" ? 0 : 1);
+  }, [isMuted, documentState]);
 
   const Icon = isMuted ? SpeakerSlash : SpeakerHigh;
 
