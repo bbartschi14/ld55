@@ -16,6 +16,8 @@ const KeyControls = () => {
         className={classes.key}
         onMouseDown={() => keyStore.setState({ leftPressed: true })}
         onMouseUp={() => keyStore.setState({ leftPressed: false })}
+        onTouchStart={() => keyStore.setState({ leftPressed: true })}
+        onTouchEnd={() => keyStore.setState({ leftPressed: false })}
         data-pressed={leftPressed}
       >
         W
@@ -26,6 +28,8 @@ const KeyControls = () => {
         className={classes.key}
         onMouseDown={() => keyStore.setState({ backPressed: true })}
         onMouseUp={() => keyStore.setState({ backPressed: false })}
+        onTouchStart={() => keyStore.setState({ backPressed: true })}
+        onTouchEnd={() => keyStore.setState({ backPressed: false })}
         data-pressed={backPressed}
       >
         A
@@ -35,6 +39,8 @@ const KeyControls = () => {
         className={classes.key}
         onMouseDown={() => keyStore.setState({ rightPressed: true })}
         onMouseUp={() => keyStore.setState({ rightPressed: false })}
+        onTouchStart={() => keyStore.setState({ rightPressed: true })}
+        onTouchEnd={() => keyStore.setState({ rightPressed: false })}
         data-pressed={rightPressed}
       >
         S
@@ -44,6 +50,8 @@ const KeyControls = () => {
         className={classes.key}
         onMouseDown={() => keyStore.setState({ forwardPressed: true })}
         onMouseUp={() => keyStore.setState({ forwardPressed: false })}
+        onTouchStart={() => keyStore.setState({ forwardPressed: true })}
+        onTouchEnd={() => keyStore.setState({ forwardPressed: false })}
         data-pressed={forwardPressed}
       >
         D

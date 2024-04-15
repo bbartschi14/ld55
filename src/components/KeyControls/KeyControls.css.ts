@@ -18,6 +18,10 @@ export const key = style({
       transform: "scale(1.1)",
     },
   },
+
+  userSelect: "none",
+  touchAction: "none",
+  WebkitUserSelect: "none",
 });
 
 // Grid container for WASD layout
