@@ -110,9 +110,9 @@ export const gameStore = createStore<
           return;
         }
 
-        const nextLevel = currentLevel + 1;
+        let nextLevel = currentLevel + 1;
         if (nextLevel >= LEVELS.length) {
-          return;
+          nextLevel = 0;
         }
 
         const data = LEVELS[nextLevel];

@@ -8,7 +8,7 @@ import {
   interactionGroups,
 } from "@react-three/rapier";
 
-type GoalProps = GroupProps & { index: number };
+type GoalProps = GroupProps & { index: number; isFinal?: boolean };
 
 const Goal = (props: GoalProps) => {
   const texture = useTexture("/Shadow.png");
@@ -26,7 +26,12 @@ const Goal = (props: GoalProps) => {
           <CuboidCollider args={[0.1, 1, 0.1]} position={[0, 0.5, -1]} />
           <mesh position={[0, 0.5, 0]} rotation={[0, Math.PI / 2, 0]}>
             <torusGeometry args={[1, 0.1, 16, 100]} />
-            <meshStandardMaterial color="#696969" />
+            <meshStandardMaterial
+              color={props.isFinal ? "#ffe538" : "#696969"}
+              // roughness={!props.isFinal ? 0.0 : 1}
+              // metalness={!props.isFinal ? 0.75 : 0}
+              emissive={props.isFinal ? "#ffb108" : "#000000"}
+            />
           </mesh>
         </RigidBody>
         <RigidBody

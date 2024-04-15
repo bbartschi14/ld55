@@ -39,7 +39,12 @@ const Canvas = () => {
 
               <color attach="background" args={["#f8ebff"]} />
               {goals.map((goal, index) => (
-                <Goal key={index} position={goal.position} index={index} />
+                <Goal
+                  key={index}
+                  position={goal.position}
+                  index={index}
+                  isFinal={index === goals.length - 1}
+                />
               ))}
               <Bounds />
               {trees.map((tree, index) => (
