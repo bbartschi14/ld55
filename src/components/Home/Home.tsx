@@ -36,18 +36,18 @@ const Home = () => {
   }, []);
 
   return (
-    <div className={classes.root}>
-      <R3FCanvas
-        camera={{ fov: 30 }}
-        gl={{ powerPreference: "high-performance", antialias: true }}
-      >
-        <CameraControls
-          azimuthAngle={degToRad(0)}
-          polarAngle={degToRad(80)}
-          distance={5}
-          connect={() => null}
-        />
-        <Suspense>
+    <Suspense>
+      <div className={classes.root}>
+        <R3FCanvas
+          camera={{ fov: 30 }}
+          gl={{ powerPreference: "high-performance", antialias: true }}
+        >
+          <CameraControls
+            azimuthAngle={degToRad(0)}
+            polarAngle={degToRad(80)}
+            distance={5}
+            connect={() => null}
+          />
           <group position={[0, 0.35, 0]}>
             <group position={[-0.1, 0, 0]}>
               <LogoText />
@@ -72,36 +72,36 @@ const Home = () => {
           <Environment preset="sunset" />
           <ambientLight intensity={1} />
           <pointLight position={[-0.5, 1.5, 1.5]} intensity={5} />
-        </Suspense>
-      </R3FCanvas>
-      <Center
-        style={{
-          zIndex: 100,
-          position: "fixed",
-          left: 0,
-          right: 0,
-          bottom: "10dvh",
-        }}
-      >
-        <Transition mounted={mountPlay} duration={700} transition="fade-up">
-          {(styles) => (
-            <Button
-              size="xl"
-              w={rem(300)}
-              h={rem(100)}
-              radius={rem(16)}
-              style={{ boxShadow: "4px 4px 16px #00000034", ...styles }}
-              component={Link}
-              to={"/game"}
-            >
-              <Text fz="3rem" fw="bold">
-                Play
-              </Text>
-            </Button>
-          )}
-        </Transition>
-      </Center>
-    </div>
+        </R3FCanvas>
+        <Center
+          style={{
+            zIndex: 100,
+            position: "fixed",
+            left: 0,
+            right: 0,
+            bottom: "10dvh",
+          }}
+        >
+          <Transition mounted={mountPlay} duration={700} transition="fade-up">
+            {(styles) => (
+              <Button
+                size="xl"
+                w={rem(300)}
+                h={rem(100)}
+                radius={rem(16)}
+                style={{ boxShadow: "4px 4px 16px #00000034", ...styles }}
+                component={Link}
+                to={"/game"}
+              >
+                <Text fz="3rem" fw="bold">
+                  Play
+                </Text>
+              </Button>
+            )}
+          </Transition>
+        </Center>
+      </div>
+    </Suspense>
   );
 };
 
