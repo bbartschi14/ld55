@@ -71,6 +71,7 @@ const Home = () => {
           <Ground />
           <Environment preset="sunset" />
           <ambientLight intensity={1} />
+          <pointLight position={[-0.5, 1.5, 1.5]} intensity={5} />
         </Suspense>
       </R3FCanvas>
       <Center
