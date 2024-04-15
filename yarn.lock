@@ -953,6 +953,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@phosphor-icons/react@npm:^2.1.4":
+  version: 2.1.4
+  resolution: "@phosphor-icons/react@npm:2.1.4"
+  peerDependencies:
+    react: ">= 16.8"
+    react-dom: ">= 16.8"
+  checksum: 10c0/29f4e8c4ccd4c79051bbb0054766b40a32129876c1ee1fcc9d1a2b857e8eec9aa184bdb02498757c24345d843d849e5b033cfd8b1c5c4df70c1dc7b503328df7
+  languageName: node
+  linkType: hard
+
 "@pkgjs/parseargs@npm:^0.11.0":
   version: 0.11.0
   resolution: "@pkgjs/parseargs@npm:0.11.0"
@@ -1416,6 +1426,13 @@ __metadata:
   version: 1.0.5
   resolution: "@types/estree@npm:1.0.5"
   checksum: 10c0/b3b0e334288ddb407c7b3357ca67dbee75ee22db242ca7c56fe27db4e1a31989cb8af48a84dd401deb787fe10cc6b2ab1ee82dc4783be87ededbe3d53c79c70d
+  languageName: node
+  linkType: hard
+
+"@types/howler@npm:^2":
+  version: 2.2.11
+  resolution: "@types/howler@npm:2.2.11"
+  checksum: 10c0/0a6b6d35852f8807ff6513cc101cb4fd7a80a8d9ced8b26cf978ea976b5a7c39ca4b9db06bb76971739fe38695ff4ec91e315d7e99290718fa9fb51e9d826d0b
   languageName: node
   linkType: hard
 
@@ -2947,6 +2964,13 @@ __metadata:
   version: 1.3.5
   resolution: "hls.js@npm:1.3.5"
   checksum: 10c0/962e2248922ad0f7fe023c0ae1645764ce281be56d44d0cece0ca84c2c28b2be84a57713b7c0d4e982a39250ba42fe4d239fbced069cbc58beea977d8cc23090
+  languageName: node
+  linkType: hard
+
+"howler@npm:^2.2.4":
+  version: 2.2.4
+  resolution: "howler@npm:2.2.4"
+  checksum: 10c0/74a295f56fd9b2abce122b27ed12c33fa195fb8a76832803e92d8e462a1eca803b55f44c14db052211d0cfab85c7c5249664c68d95bbbc16c775fac73866c6ef
   languageName: node
   linkType: hard
 
@@ -4905,12 +4929,14 @@ __metadata:
     "@mantine/core": "npm:7.8.0"
     "@mantine/hooks": "npm:7.8.0"
     "@mantine/vanilla-extract": "npm:7.8.0"
+    "@phosphor-icons/react": "npm:^2.1.4"
     "@react-spring/three": "npm:^9.7.3"
     "@react-spring/web": "npm:^9.7.3"
     "@react-three/drei": "npm:^9.105.3"
     "@react-three/fiber": "npm:^8.16.1"
     "@react-three/rapier": "npm:^1.3.0"
     "@react-three/rapier-addons": "npm:^4.0.0"
+    "@types/howler": "npm:^2"
     "@types/react": "npm:^18.2.65"
     "@types/react-dom": "npm:^18.2.21"
     "@types/three": "npm:^0.163.0"
@@ -4923,6 +4949,7 @@ __metadata:
     eslint: "npm:^8.57.0"
     eslint-plugin-react-hooks: "npm:^4.6.0"
     eslint-plugin-react-refresh: "npm:^0.4.5"
+    howler: "npm:^2.2.4"
     immer: "npm:^10.0.4"
     postcss: "npm:^8.4.35"
     postcss-preset-mantine: "npm:1.14.4"

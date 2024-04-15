@@ -3,6 +3,7 @@ import { immer } from "zustand/middleware/immer";
 import { v4 as uuid } from "uuid";
 import { Object3D } from "three";
 import { LEVELS, LevelData } from "@/levels/level";
+import { SOUNDS } from "@/components/AudioManager/sounds";
 
 export interface GameActions {
   reachGoal: () => void;
@@ -67,6 +68,8 @@ export const gameStore = createStore<
         set({ score: get().score + 1 });
         const nextGoal = goalReached + 1;
 
+        SOUNDS.ringin.play();
+
         if (nextGoal >= get().goals.length) {
           set({ characterState: "finished", currentGoal: null });
           return;
@@ -80,6 +83,12 @@ export const gameStore = createStore<
           const index = bats.findIndex((bat) => bat.id === id);
           bats.splice(index, 1);
         });
+
+        if (Math.random() > 0.5) {
+          SOUNDS.hit1.play();
+        } else {
+          SOUNDS.hit2.play();
+        }
 
         set({ characterState: "hit" });
         setTimeout(() => {
