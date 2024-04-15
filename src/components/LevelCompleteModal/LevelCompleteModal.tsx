@@ -1,6 +1,6 @@
 import { formatTime } from "@/components/Timer/Timer";
 import { actions, useGameStore } from "@/stores/gameStore";
-import { Button, Center, Modal, Stack, Text } from "@mantine/core";
+import { Button, Modal, Stack, Text } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 
 const scaleY = {
