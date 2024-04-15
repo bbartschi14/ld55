@@ -55,6 +55,7 @@ const BoundsWall = ({ x, z, width, height, depth }: BoundsWallProps) => {
           transparent
           opacity={0.1}
           map={texture}
+          depthWrite={false}
         />
         {fencePositions.map((position, i) => (
           <Instance

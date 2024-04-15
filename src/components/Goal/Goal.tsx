@@ -46,6 +46,7 @@ const Goal = (props: GoalProps) => {
           transparent
           opacity={0.1}
           map={texture}
+          depthWrite={false}
         />
       </mesh>
     </group>
