@@ -28,7 +28,7 @@ const Canvas = () => {
     <div className={classes.root}>
       <R3FCanvas
         camera={{ fov: 30 }}
-        gl={{ powerPreference: "high-performance", antialias: false }}
+        gl={{ powerPreference: "high-performance", antialias: true }}
         key={runId}
       >
         <Suspense>

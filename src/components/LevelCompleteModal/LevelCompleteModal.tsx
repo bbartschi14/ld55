@@ -33,12 +33,14 @@ const LevelCompleteModal = () => {
         <Text fz="3rem" ta="center">
           {formatTime(levelTime)}
         </Text>
-        {/* <Button onClick={() => actions.resetLevel()}>Next Level</Button> */}
-        <Center pb="lg">
+        <Stack pb="md" align="center">
           <Button onClick={() => actions.nextLevel()} size="xl">
             Next Level
           </Button>
-        </Center>
+          <Button onClick={() => actions.resetLevel()} variant="light">
+            Restart Level
+          </Button>
+        </Stack>
       </Stack>
     </Modal>
   );

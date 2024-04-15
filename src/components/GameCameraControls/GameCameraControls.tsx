@@ -63,6 +63,8 @@ const GameCameraControls = () => {
   }, [spawnPoint, calcLeadAmount]);
 
   useFrame(() => {
+    ref.current.disconnect();
+
     const character = gameStore.getState().references.character;
 
     const leadAmount = calcLeadAmount();
